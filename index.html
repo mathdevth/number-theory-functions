@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ฟังก์ชันในทฤษฎีจำนวน: ห้องทดลอง φ τ σ μ</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#EEF3F8; --card:#FFFFFF; --ink:#14213D; --soft:#52607A; --line:#C9D6E4; --grid:#DCE6F0;
+  --gold:#B07800; --goldbg:#FFF1CC; --teal:#0A7567; --tealbg:#D9F3EE; --red:#C2352D; --redbg:#FBE1DF;
+  --p0:#C2352D; --p1:#2468B5; --p2:#6B4FD8; --p3:#8A5E00; --p4:#0A7567;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --paper:#0F1A2E; --card:#18263F; --ink:#E8EEF7; --soft:#9FB0CC; --line:#2F4265; --grid:#16233B;
+  --gold:#F2B632; --goldbg:#3D3212; --teal:#3CC9B5; --tealbg:#113A38; --red:#FF7A70; --redbg:#47201F;
+  --p0:#FF7A70; --p1:#6FB0F5; --p2:#A592FF; --p3:#F2B632; --p4:#3CC9B5;
+}}
+:root[data-theme="dark"]{
+  --paper:#0F1A2E; --card:#18263F; --ink:#E8EEF7; --soft:#9FB0CC; --line:#2F4265; --grid:#16233B;
+  --gold:#F2B632; --goldbg:#3D3212; --teal:#3CC9B5; --tealbg:#113A38; --red:#FF7A70; --redbg:#47201F;
+  --p0:#FF7A70; --p1:#6FB0F5; --p2:#A592FF; --p3:#F2B632; --p4:#3CC9B5;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--paper);color:var(--ink);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  font-family:"IBM Plex Sans Thai","Leelawadee UI",Tahoma,sans-serif;font-size:16px;line-height:1.65}
+.num,h1,h2,.big,button,input,td,th{font-family:"Chakra Petch","IBM Plex Sans Thai","Leelawadee UI",Tahoma,sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+header h1{font-size:clamp(1.7rem,5vw,2.6rem);line-height:1.2;margin:8px 0 4px;font-weight:700}
+header p{margin:0 0 16px;color:var(--soft);max-width:60ch}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+button{font-size:1rem;cursor:pointer;border:2px solid var(--ink);background:var(--card);color:var(--ink);
+  padding:7px 14px;border-radius:8px;font-weight:500}
+button:hover:not(:disabled){background:var(--goldbg)}
+button:disabled{opacity:.4;cursor:default}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+button[aria-selected="true"],button.on{background:var(--ink);color:var(--paper)}
+button.go{background:var(--teal);border-color:var(--teal);color:#fff}
+:root[data-theme="dark"] button.go{color:#06211E}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) button.go{color:#06211E}}
+button.sm{padding:3px 10px;font-size:.9rem;border-width:1.5px}
+.panel{background:var(--card);border:2px solid var(--ink);border-radius:12px;padding:18px;margin-bottom:18px}
+.panel h2{margin:0 0 6px;font-size:1.3rem}
+.hint{color:var(--soft);font-size:.95rem;margin:0 0 12px;max-width:68ch}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}
+input[type=number],input[type=text]{font-size:1.1rem;border:2px solid var(--ink);border-radius:8px;padding:6px 8px;
+  background:var(--card);color:var(--ink);width:6.5em}
+input[type=range]{flex:1;min-width:140px;accent-color:var(--teal)}
+.fac{font-size:1.5rem;font-weight:700}
+.tok{display:inline-block;padding:1px 9px;border-radius:6px;border:2px solid;margin:0 2px;font-weight:700}
+.four{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
+.four button{display:flex;flex-direction:column;align-items:flex-start;padding:8px 12px;text-align:left}
+.four .sym{font-size:.95rem;color:inherit;opacity:.8}
+.four .val{font-size:1.6rem;font-weight:700;line-height:1.2}
+@media (max-width:560px){.four{grid-template-columns:repeat(2,1fr)}}
+.cells{display:grid;grid-template-columns:repeat(auto-fill,minmax(36px,1fr));gap:4px;margin:12px 0}
+.c{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--line);border-radius:6px;
+  font-family:"Chakra Petch",sans-serif;font-weight:500;font-size:.95rem;background:var(--card);color:var(--ink);padding:0}
+.c.x{background:color-mix(in srgb,var(--pc) 24%,var(--card));border:2px solid var(--pc);color:var(--ink);text-decoration:line-through;text-decoration-color:var(--pc);text-decoration-thickness:2px}
+.c.keep{background:var(--tealbg);border-color:var(--teal);font-weight:700}
+.c.sel{background:var(--goldbg);border-color:var(--gold);font-weight:700}
+.c.miss{border:2.5px dashed var(--gold)}
+.c.bad{background:var(--redbg);border-color:var(--red)}
+.chain{font-size:1.15rem;font-family:"Chakra Petch",sans-serif}
+ol.steps{padding-left:1.4em;margin:10px 0}
+ol.steps li{margin:6px 0;padding-left:4px}
+ol.steps li::marker{font-family:"Chakra Petch",sans-serif;font-weight:700;color:var(--teal)}
+.result{display:inline-block;background:var(--goldbg);border:2px solid var(--gold);border-radius:8px;padding:2px 12px;font-weight:700;font-family:"Chakra Petch",sans-serif}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;margin:8px 0}
+td,th{border:1.5px solid var(--line);padding:5px 11px;text-align:center;min-width:44px}
+th{background:var(--paper);font-weight:700}
+td.sum{background:var(--goldbg);font-weight:700;white-space:nowrap}
+.layers{display:flex;gap:16px;flex-wrap:wrap}
+.chip{display:inline-block;border:1.5px solid var(--line);border-radius:999px;padding:1px 10px;margin:2px;font-family:"Chakra Petch",sans-serif}
+.chip.sq{border-color:var(--gold);background:var(--goldbg)}
+.ok{color:var(--teal);font-weight:700}.no{color:var(--red);font-weight:700}
+.banner{padding:8px 12px;border-radius:8px;margin:10px 0;border:2px solid}
+.banner.ok{background:var(--tealbg);border-color:var(--teal);color:var(--ink);font-weight:500}
+.banner.no{background:var(--redbg);border-color:var(--red);color:var(--ink);font-weight:500}
+.fill input{width:3.1em;text-align:center;padding:4px 2px;font-size:1rem;border-width:1.5px}
+.fill input.good{background:var(--tealbg);border-color:var(--teal)}
+.fill input.wrong{background:var(--redbg);border-color:var(--red)}
+.hud{display:flex;gap:18px;flex-wrap:wrap;font-family:"Chakra Petch",sans-serif;font-size:1.1rem}
+.hud b{font-size:1.4rem}
+.bar{height:10px;border:2px solid var(--ink);border-radius:6px;overflow:hidden;margin:8px 0}
+.bar i{display:block;height:100%;background:var(--teal);transition:width .25s linear}
+.q{font-size:clamp(1.5rem,5vw,2.2rem);font-weight:700;font-family:"Chakra Petch","IBM Plex Sans Thai",sans-serif;margin:14px 0}
+.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.choices button{font-size:1.4rem;padding:14px;font-weight:700}
+.choices button.right{background:var(--tealbg);border-color:var(--teal);color:var(--ink);opacity:1}
+.choices button.wrongc{background:var(--redbg);border-color:var(--red);color:var(--ink);opacity:1}
+.claim{border-left:6px solid var(--gold);background:var(--goldbg);padding:10px 14px;border-radius:0 8px 8px 0;font-size:1.1rem;margin:12px 0}
+ol.steps li.okp{background:var(--tealbg)}ol.steps li.nop{background:var(--redbg)}
+ol.steps li.mv{border:1.5px solid var(--line);border-radius:8px;padding:6px 8px;margin:6px 0}
+.mvb{float:right;margin-left:8px;white-space:nowrap}
+.term{border-bottom:2px dotted var(--teal);cursor:help}
+.term:hover,.term:focus-visible{background:var(--tealbg);outline:none}
+dialog{border:2px solid var(--ink);border-radius:12px;background:var(--card);color:var(--ink);max-width:min(480px,92vw);padding:18px}
+dialog::backdrop{background:rgba(10,20,40,.45)}
+dialog h2{margin:0 0 6px;font-size:1.25rem}
+.ex{background:var(--paper);border-radius:8px;padding:8px 12px;margin:8px 0}
+dl.gl dt{font-weight:600;font-size:1.08rem;margin-top:14px;font-family:"Chakra Petch","IBM Plex Sans Thai",sans-serif}
+dl.gl dd{margin:2px 0 0;max-width:68ch}
+.fill td.g::after{content:" ✓";color:var(--teal);font-weight:700}
+.fill td.w::after{content:" ✗";color:var(--red);font-weight:700}
+.fill td{white-space:nowrap}
+.choices button.right::after{content:" ✓"}.choices button.wrongc::after{content:" ✗"}
+#cpCells .c.keep::after{content:"✓";font-size:.7em;margin-left:2px}
+#cpCells .c.bad::after{content:"✗";font-size:.7em;margin-left:2px}
+.sg{font-size:.7em;margin-left:1px;align-self:flex-start;font-weight:700}
+footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--line);color:var(--soft);font-size:.9rem;text-align:center}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>ฟังก์ชันในทฤษฎีจำนวน</h1>
+  <p>ห้องทดลองสำหรับ φ(n), τ(n), σ(n) และ μ(n) ลองเปลี่ยนค่า n แล้วดูว่าแต่ละฟังก์ชัน “นับ” หรือ “รวม” อะไร ทีละขั้น</p>
+</header>
+<nav role="tablist" id="nav">
+  <button role="tab" data-tab="lab" aria-selected="true">สำรวจทีละฟังก์ชัน</button>
+  <button role="tab" data-tab="mult" aria-selected="false">ฟังก์ชันการคูณ</button>
+  <button role="tab" data-tab="fill" aria-selected="false">เติมตาราง</button>
+  <button role="tab" data-tab="proof" aria-selected="false">ฝึกพิสูจน์</button>
+  <button role="tab" data-tab="game" aria-selected="false">เกม</button>
+  <button role="tab" data-tab="gloss" aria-selected="false">คำศัพท์</button>
+</nav>
+
+<!-- LAB -->
+<section id="lab">
+  <div class="panel">
+    <h2>เลือกจำนวนเต็มบวก n</h2>
+    <div class="row">
+      <input type="number" id="nIn" min="1" max="9999" value="12" aria-label="ค่า n">
+      <input type="range" id="nSl" min="1" max="200" value="12" aria-label="เลื่อนเลือก n ตั้งแต่ 1 ถึง 200">
+    </div>
+    <div class="row" id="quick"></div>
+    <div class="fac" id="facOut"></div>
+    <p class="hint" style="margin:4px 0 0">ทุกฟังก์ชันเริ่มจากขั้นเดียวกัน คือ เขียน n ในรูปผลคูณของกำลังของจำนวนเฉพาะ</p>
+    <div class="four" id="four"></div>
+  </div>
+  <div class="panel" id="view"></div>
+</section>
+
+<!-- MULT -->
+<section id="mult" hidden>
+  <div class="panel">
+    <h2>f(mn) = f(m)·f(n) จริงเมื่อไร</h2>
+    <p class="hint">ฟังก์ชันการคูณ คือฟังก์ชันที่ f(mn) = f(m)f(n) ทุกครั้งที่ (m, n) = 1 ลองเลือก m, n ทั้งแบบที่เป็นจำนวนเฉพาะสัมพัทธ์และแบบที่ไม่เป็น แล้วสังเกตตาราง</p>
+    <div class="row">
+      <label>m = <input type="number" id="mA" min="1" max="999" value="4"></label>
+      <label>n = <input type="number" id="mB" min="1" max="999" value="9"></label>
+      <button class="sm" data-pair="4,9">4, 9</button><button class="sm" data-pair="4,6">4, 6</button>
+      <button class="sm" data-pair="5,12">5, 12</button><button class="sm" data-pair="6,10">6, 10</button>
+    </div>
+    <div id="multOut"></div>
+  </div>
+</section>
+
+<!-- FILL -->
+<section id="fill" hidden>
+  <div class="panel">
+    <h2>เติมตารางค่าฟังก์ชัน n = 1 ถึง 12</h2>
+    <p class="hint">ตารางเดียวกับในเอกสารประกอบการเรียน ช่องจะเปลี่ยนเป็นสีเขียวเมื่อถูก สีแดงเมื่อยังไม่ถูก ถ้าติดให้กลับไปดูหน้า “สำรวจทีละฟังก์ชัน”</p>
+    <div class="scroll"><table class="fill" id="fillT"></table></div>
+    <div class="row"><span id="fillP" class="num"></span>
+      <button class="sm" id="fillShow">เฉลยช่องที่เหลือ</button><button class="sm" id="fillReset">ล้างตาราง</button></div>
+  </div>
+</section>
+
+<!-- PROOF -->
+<section id="proof" hidden>
+  <div class="panel">
+    <h2>ฝึกพิสูจน์</h2>
+    <p class="hint">ทุกข้อเดินตามลำดับเดียวกัน คือ ทดลองกับตัวเลขจนเชื่อ จับแนวคิดหลัก แล้วจึงเขียนบทพิสูจน์ทีละขั้น จะเปิดอ่านทีละขั้น หรือลองเรียงลำดับขั้นเองก็ได้</p>
+    <div id="proofOut"></div>
+  </div>
+</section>
+
+<!-- GAME -->
+<section id="game" hidden>
+  <div class="panel">
+    <h2>ศึกชิงค่าฟังก์ชัน</h2>
+    <p class="hint">ตอบให้ได้มากที่สุดใน 75 วินาที ตอบถูกติดกันได้คะแนนคูณ ตอบผิดเวลาจะหยุดให้อ่านวิธีคิดก่อน</p>
+    <div id="qzStart">
+      <div class="row">ระดับ
+        <button class="sm lv on" data-lv="0">ง่าย (φ, τ, n ≤ 30)</button>
+        <button class="sm lv" data-lv="1">กลาง (ครบ 4 ฟังก์ชัน)</button>
+        <button class="sm lv" data-lv="2">ยาก (n ใหญ่ + โจทย์ย้อนกลับ)</button>
+      </div>
+      <div class="row"><button class="go" id="qzGo">เริ่มเล่น</button><span id="qzBest" class="num"></span></div>
+    </div>
+    <div id="qzPlay" hidden>
+      <div class="hud"><span>เวลา <b id="qzT">75</b></span><span>คะแนน <b id="qzS">0</b></span><span>คอมโบ <b id="qzC">×1</b></span></div>
+      <div class="bar"><i id="qzBar" style="width:100%"></i></div>
+      <div class="q" id="qzQ"></div>
+      <div class="choices" id="qzCh"></div>
+      <div id="qzFb"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>เก็บจำนวนเฉพาะสัมพัทธ์</h2>
+    <p class="hint">แตะทุกจำนวนตั้งแต่ 1 ถึง n ที่เป็นจำนวนเฉพาะสัมพัทธ์กับ n ให้ครบ จำนวนที่เก็บได้ควรเท่ากับ φ(n) พอดี</p>
+    <div class="q" id="cpQ"></div>
+    <div class="cells" id="cpCells"></div>
+    <div class="row">
+      <button class="go" id="cpCheck">ตรวจคำตอบ</button>
+      <button id="cpHint" class="sm">ขอคำใบ้</button>
+      <button id="cpNext" class="sm">ข้อใหม่</button>
+      <span class="num">ผ่านแล้ว <b id="cpScore">0</b> ข้อ</span>
+    </div>
+    <div id="cpFb"></div>
+  </div>
+</section>
+<!-- GLOSS -->
+<section id="gloss" hidden>
+  <div class="panel">
+    <h2>ลองเช็กจำนวนเฉพาะสัมพัทธ์</h2>
+    <p class="hint">สองจำนวนเป็นจำนวนเฉพาะสัมพัทธ์กัน เมื่อตัวหารบวกที่มีร่วมกันมีเพียง 1 ตัวเดียว ใส่สองจำนวนแล้วดูตัวหารร่วม</p>
+    <div class="row"><label>a = <input type="number" id="gA" min="1" max="999" value="8"></label>
+      <label>b = <input type="number" id="gB" min="1" max="999" value="15"></label></div>
+    <div id="gOut"></div>
+  </div>
+  <div class="panel">
+    <h2>คำศัพท์</h2>
+    <p class="hint">คำที่มีเส้นประใต้คำในหน้าอื่น แตะเพื่อเปิดคำอธิบายเดียวกันนี้ได้ทันที</p>
+    <dl class="gl" id="glList"></dl>
+  </div>
+  <div class="panel">
+    <h2>สัญลักษณ์</h2>
+    <dl class="gl" id="symList"></dl>
+  </div>
+</section>
+<footer>พัฒนาโดย ครูคุ้ม (Achittapon Boonrat) · สื่อประกอบการติว สอวน. คณิตศาสตร์ เรื่องฟังก์ชันในทฤษฎีจำนวน · 2026</footer>
+<dialog id="dlg"><h2 id="dlgT"></h2><div id="dlgB"></div><div class="row"><button class="go" id="dlgX">เข้าใจแล้ว</button></div></dialog>
+
+</div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const PC=['var(--p0)','var(--p1)','var(--p2)','var(--p3)','var(--p4)'];
+function factor(n){const f=[];for(let p=2;p*p<=n;p++){if(n%p===0){let a=0;while(n%p===0){n/=p;a++}f.push([p,a])}}if(n>1)f.push([n,1]);return f}
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+const F={
+  phi:n=>factor(n).reduce((r,[p])=>r/p*(p-1),n),
+  tau:n=>factor(n).reduce((r,[,a])=>r*(a+1),1),
+  sigma:n=>factor(n).reduce((r,[p,a])=>r*((p**(a+1)-1)/(p-1)),1),
+  mu:n=>{const f=factor(n);return f.some(x=>x[1]>1)?0:(f.length%2?-1:1)}
+};
+const SYM={phi:'φ',tau:'τ',sigma:'σ',mu:'μ'};
+const NAME={phi:'ออยเลอร์ ฟี-ฟังก์ชัน',tau:'จำนวนตัวหารบวก',sigma:'ผลรวมตัวหารบวก',mu:'ฟังก์ชันเมอบิอุส'};
+const divisors=n=>{const d=[];for(let i=1;i*i<=n;i++)if(n%i===0){d.push(i);if(i*i!==n)d.push(n/i)}return d.sort((a,b)=>a-b)};
+const pw=(p,a)=>a===1?`${p}`:`${p}<sup>${a}</sup>`;
+const facPlain=n=>n===1?'1':factor(n).map(([p,a])=>pw(p,a)).join(' × ');
+const facTok=n=>n===1?'1':factor(n).map(([p,a],i)=>`<span class="tok" style="border-color:${PC[i%5]};color:${PC[i%5]}">${pw(p,a)}</span>`).join('×');
+const show=v=>v<0?'−'+(-v):''+v;
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=rnd(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+
+/* ---------- worked solutions ---------- */
+function explain(fn,n){
+  const f=factor(n), S=SYM[fn];
+  if(n===1) return [`n = 1 ไม่มีตัวประกอบเฉพาะ จึงได้ ${S}(1) = 1 ตามนิยาม`];
+  const st=[`แยกตัวประกอบ: ${n} = ${facPlain(n)}`];
+  if(fn==='phi'){
+    st.push('ใช้ φ(p<sup>a</sup>) = p<sup>a</sup> − p<sup>a−1</sup> กับแต่ละกำลังของจำนวนเฉพาะ: '+
+      f.map(([p,a])=>`φ(${pw(p,a)}) = ${p**a} − ${p**(a-1)} = ${p**a-p**(a-1)}`).join(', '));
+    st.push(`φ เป็นฟังก์ชันการคูณ จึงคูณกัน: φ(${n}) = ${f.map(([p,a])=>p**a-p**(a-1)).join(' × ')} = <span class="result">${F.phi(n)}</span>`);
+  }else if(fn==='tau'){
+    st.push('ตัวหารแต่ละตัวเลือกเลขชี้กำลังของ p ได้ตั้งแต่ 0 ถึง a รวม a + 1 แบบ: '+f.map(([p,a])=>`${p} เลือกได้ ${a+1} แบบ`).join(', '));
+    st.push(`τ(${n}) = ${f.map(([,a])=>`(${a}+1)`).join('')} = ${f.map(([,a])=>a+1).join(' × ')} = <span class="result">${F.tau(n)}</span>`);
+  }else if(fn==='sigma'){
+    st.push('ใช้ σ(p<sup>a</sup>) = 1 + p + … + p<sup>a</sup> = (p<sup>a+1</sup> − 1)/(p − 1): '+
+      f.map(([p,a])=>`σ(${pw(p,a)}) = ${Array.from({length:a+1},(_,i)=>p**i).join(' + ')} = ${(p**(a+1)-1)/(p-1)}`).join(', '));
+    st.push(`σ เป็นฟังก์ชันการคูณ จึงคูณกัน: σ(${n}) = ${f.map(([p,a])=>(p**(a+1)-1)/(p-1)).join(' × ')} = <span class="result">${F.sigma(n)}</span>`);
+  }else{
+    const sq=f.filter(x=>x[1]>1);
+    if(sq.length){st.push(`มี ${pw(sq[0][0],2)} หาร ${n} ลงตัว (เลขชี้กำลังของ ${sq[0][0]} คือ ${sq[0][1]})`);st.push(`จึงได้ μ(${n}) = <span class="result">0</span>`)}
+    else{st.push(`ไม่มีจำนวนเฉพาะตัวใดซ้ำ และมีจำนวนเฉพาะต่างกัน k = ${f.length} ตัว`);st.push(`μ(${n}) = (−1)<sup>${f.length}</sup> = <span class="result">${show(F.mu(n))}</span>`)}
+  }
+  return st;
+}
+const stepsHTML=a=>'<ol class="steps">'+a.map(s=>`<li>${s}</li>`).join('')+'</ol>';
+
+/* ---------- LAB ---------- */
+const S={n:12,fn:'phi',step:0};
+$('#quick').innerHTML='ลองค่าเหล่านี้ '+[1,12,36,60,97,100,180,360].map(v=>`<button class="sm" data-n="${v}">${v}</button>`).join('');
+function setN(v){v=Math.max(1,Math.min(9999,Math.floor(+v)||1));S.n=v;S.step=0;$('#nIn').value=v;$('#nSl').value=Math.min(v,200);renderLab()}
+$('#nIn').oninput=e=>{if(e.target.value!=='')setN(e.target.value)};
+$('#nSl').oninput=e=>setN(e.target.value);
+$('#quick').onclick=e=>{if(e.target.dataset.n)setN(e.target.dataset.n)};
+$('#four').onclick=e=>{const b=e.target.closest('button');if(b){S.fn=b.dataset.fn;S.step=0;renderLab()}};
+
+function renderLab(){
+  const n=S.n;
+  $('#facOut').innerHTML=`${n} = ${facTok(n)}`+(factor(n).length===1&&factor(n)[0][1]===1?' <span class="hint">(จำนวนเฉพาะ)</span>':'');
+  $('#four').innerHTML=Object.keys(F).map(k=>`<button data-fn="${k}" class="${S.fn===k?'on':''}" aria-pressed="${S.fn===k}">
+    <span class="sym">${SYM[k]}(${n}) ${NAME[k]}</span><span class="val">${show(F[k](n))}</span></button>`).join('');
+  $('#view').innerHTML=({phi:viewPhi,tau:()=>viewDiv('tau'),sigma:()=>viewDiv('sigma'),mu:viewMu})[S.fn]();
+}
+$('#view').onclick=e=>{
+  const a=e.target.dataset.act; if(!a) return;
+  const k=factor(S.n).length;
+  if(a==='next')S.step=Math.min(k,S.step+1); if(a==='reset')S.step=0; if(a==='all')S.step=k;
+  if(a==='n')return setN(e.target.dataset.v);
+  renderLab();
+};
+
+function viewPhi(){
+  const n=S.n,f=factor(n),k=f.length;
+  let h=`<h2>φ(${n}) นับจำนวนที่ไม่มีตัวประกอบร่วมกับ ${n}</h2>
+  <p class="hint">φ(n) คือจำนวนของจำนวนเต็มบวกที่ไม่เกิน n และเป็นจำนวนเฉพาะสัมพัทธ์กับ n วิธีนับอย่างเป็นระบบคือ ตัดพหุคูณของตัวประกอบเฉพาะของ n ออกทีละตัว</p>`;
+  if(n<=200){
+    let rem=n;const chain=[`เริ่มด้วย <b>${n}</b> จำนวน`];
+    for(let i=0;i<S.step;i++){const p=f[i][0];rem=rem/p*(p-1);chain.push(`<span style="color:${PC[i%5]}">× (1 − 1/${p})</span> เหลือ <b>${rem}</b>`)}
+    h+=`<div class="row">
+      <button class="go" data-act="next" ${S.step>=k?'disabled':''}>${S.step<k?`ตัดพหุคูณของ ${f[S.step][0]}`:'ตัดครบแล้ว'}</button>
+      <button class="sm" data-act="all" ${S.step>=k?'disabled':''}>ตัดทั้งหมด</button>
+      <button class="sm" data-act="reset" ${S.step===0?'disabled':''}>เริ่มใหม่</button></div>
+      <div class="chain">${chain.join(' ')}</div><div class="cells">`;
+    for(let m=1;m<=n;m++){
+      let ci=-1;for(let i=0;i<S.step;i++)if(m%f[i][0]===0){ci=i;break}
+      h+=ci>=0?`<div class="c x" style="--pc:${PC[ci%5]}">${m}</div>`:`<div class="c ${S.step>=k?'keep':''}">${m}</div>`;
+    }
+    h+='</div>';
+    if(S.step>=k)h+=`<div class="banner ok">เหลือ ${rem} จำนวน ทุกตัวเป็นจำนวนเฉพาะสัมพัทธ์กับ ${n} ดังนั้น φ(${n}) = ${rem}${k?` = ${n}${f.map(([p])=>`(1 − 1/${p})`).join('')}`:''}</div>`;
+    else h+=`<p class="hint">สังเกตว่าทุกครั้งที่ตัดพหุคูณของ p ออก จำนวนที่เหลือจะหายไป 1/p ของที่มีอยู่พอดี</p>`;
+  }else h+=`<p class="hint">ภาพตารางแสดงได้เมื่อ n ≤ 200 สำหรับค่าที่ใหญ่กว่านี้ให้ดูวิธีคิดด้านล่าง</p>`;
+  return h+'<h2>วิธีคิดจากสูตร</h2>'+stepsHTML(explain('phi',n));
+}
+
+function viewDiv(mode){
+  const n=S.n,f=factor(n),sg=mode==='sigma';
+  let h=sg?`<h2>σ(${n}) ผลรวมของตัวหารบวกทั้งหมด</h2><p class="hint">จัดตัวหารลงตารางตามเลขชี้กำลัง แล้วรวมทีละแถว แต่ละแถวจะมีตัวร่วมดึงออกมาได้ จึงได้สูตรเป็นผลคูณของวงเล็บ</p>`
+            :`<h2>τ(${n}) จำนวนตัวหารบวกทั้งหมด</h2><p class="hint">ตัวหารทุกตัวของ n เกิดจากการเลือกเลขชี้กำลังของจำนวนเฉพาะแต่ละตัว จัดลงตารางแล้วนับช่องได้เลย</p>`;
+  const D=divisors(n);
+  if(D.length>120) h+=`<p class="hint">${n} มีตัวหาร ${D.length} ตัว มากเกินกว่าจะแสดงเป็นตาราง</p>`;
+  else{
+    const [p,a]=f[0]||[1,0],[q,b]=f[1]||[1,0],rest=n/(p**a*q**b),L=divisors(rest);
+    h+='<div class="layers">';
+    for(const r of L){
+      h+=`<div class="scroll"><table>`;
+      if(L.length>1)h+=`<caption class="hint">ชั้น × ${facPlain(r)}</caption>`;
+      h+=`<tr><th>×</th>${Array.from({length:a+1},(_,i)=>`<th style="color:${PC[0]}">${i?pw(p,i):1}</th>`).join('')}${sg?'<th>รวมแถว</th>':''}</tr>`;
+      for(let j=0;j<=b;j++){
+        let row=0;h+=`<tr><th style="color:${PC[1]}">${j?pw(q,j):1}</th>`;
+        for(let i=0;i<=a;i++){const d=p**i*q**j*r;row+=d;h+=`<td><button class="sm" style="border:0;background:none" data-act="n" data-v="${d}">${d}</button></td>`}
+        h+=(sg?`<td class="sum">${row}</td>`:'')+'</tr>';
+      }
+      h+='</table></div>';
+    }
+    h+='</div>';
+    if(f.length>=1&&!sg)h+=`<p>ตารางมี ${f.map(([,x])=>x+1).join(' × ')} = <b>${D.length}</b> ช่อง${f.length>2?' (นับรวมทุกชั้น)':''}</p>`;
+    if(!sg){
+      h+='<h2>จับคู่ตัวหาร d กับ n/d</h2><div>';
+      for(const d of D){if(d*d>n)break;h+=`<span class="chip ${d*d===n?'sq':''}">${d} × ${n/d}</span>`}
+      h+=`</div><p class="hint">${Number.isInteger(Math.sqrt(n))?`${n} เป็นกำลังสองสมบูรณ์ คู่ ${Math.sqrt(n)} × ${Math.sqrt(n)} นับได้ตัวเดียว τ(${n}) จึงเป็นจำนวนคี่`:`${n} ไม่เป็นกำลังสองสมบูรณ์ ตัวหารจับคู่ได้หมด τ(${n}) จึงเป็นจำนวนคู่`} และผลคูณของตัวหารทั้งหมดเท่ากับ ${n}<sup>${D.length}/2</sup></p>`;
+    }else{
+      const s=F.sigma(n),cmp=s===2*n?`σ(${n}) = 2 × ${n} พอดี จึงเป็น<b>จำนวนสมบูรณ์</b>`:s>2*n?`σ(${n}) &gt; 2 × ${n} เรียกว่าจำนวนมากเกิน (abundant)`:`σ(${n}) &lt; 2 × ${n} เรียกว่าจำนวนพร่อง (deficient)`;
+      h+=`<p>รวมทุกช่องได้ <b>${s}</b> ${n>1?'และ '+cmp:''}</p>`;
+    }
+  }
+  return h+'<h2>วิธีคิดจากสูตร</h2>'+stepsHTML(explain(mode,n));
+}
+
+function viewMu(){
+  const n=S.n;
+  let h=`<h2>μ(${n}) ฟังก์ชันเมอบิอุส</h2>
+  <p class="hint">μ(1) = 1, μ(n) = 0 เมื่อมีกำลังสองของจำนวนเฉพาะหาร n ลงตัว และ μ(n) = (−1)<sup>k</sup> เมื่อ n เป็นผลคูณของจำนวนเฉพาะ k ตัวที่ต่างกัน ถามตัวเองสองคำถามตามลำดับ</p>`;
+  h+=stepsHTML(explain('mu',n));
+  h+='<h2>ค่า μ ของ 1 ถึง 60</h2><p class="hint">เขียวมีเครื่องหมาย + คือ μ = 1, แดงมีเครื่องหมาย − คือ μ = −1, ไม่มีสีและมีเลข 0 คือ μ = 0 แตะเพื่อดูจำนวนนั้น</p><div class="cells">';
+  for(let m=1;m<=60;m++){const v=F.mu(m);
+    h+=`<button class="c ${m===n?'sel':''}" data-act="n" data-v="${m}" style="${v===1?'background:var(--tealbg);border-color:var(--teal)':v===-1?'background:var(--redbg);border-color:var(--red)':''}" title="μ(${m}) = ${show(v)}">${m}<small class="sg">${v===1?"+":v===-1?"−":"0"}</small></button>`}
+  return h+'</div>';
+}
+
+/* ---------- MULT ---------- */
+function renderMult(){
+  const m=Math.max(1,Math.min(999,+$('#mA').value||1)),n=Math.max(1,Math.min(999,+$('#mB').value||1)),g=gcd(m,n);
+  let h=`<div class="fac">${m} = ${facTok(m)} &nbsp; ${n} = ${facTok(n)}</div>
+  <div class="banner ${g===1?'ok':'no'}">(${m}, ${n}) = ${g} ${g===1?'เป็นจำนวนเฉพาะสัมพัทธ์ ไม่มีจำนวนเฉพาะตัวใดอยู่ทั้งสองฝั่ง':'ไม่เป็นจำนวนเฉพาะสัมพัทธ์ มีตัวประกอบเฉพาะซ้ำกันสองฝั่ง'}</div>
+  <div class="scroll"><table><tr><th>f</th><th>f(${m})</th><th>f(${n})</th><th>f(${m})·f(${n})</th><th>f(${m*n})</th><th>เท่ากัน</th></tr>`;
+  for(const k in F){const a=F[k](m),b=F[k](n),c=F[k](m*n),eq=a*b===c;
+    h+=`<tr><th>${SYM[k]}</th><td>${show(a)}</td><td>${show(b)}</td><td>${show(a*b)}</td><td>${show(c)}</td><td class="${eq?'ok':'no'}">${eq?'✓':'✗'}</td></tr>`}
+  h+=`</table></div><p class="hint">${g===1?'เมื่อ (m, n) = 1 ทั้งสี่ฟังก์ชันให้ค่าเท่ากันเสมอ นี่คือเหตุผลที่เราคำนวณจากกำลังของจำนวนเฉพาะทีละตัวแล้วคูณกันได้':'เมื่อ (m, n) ≠ 1 สมบัตินี้ไม่รับประกัน บางฟังก์ชันอาจบังเอิญเท่ากันได้ แต่ห้ามนำไปใช้คำนวณ'}</p>`;
+  $('#multOut').innerHTML=h;
+}
+$('#mA').oninput=$('#mB').oninput=renderMult;
+$('#mult').addEventListener('click',e=>{const p=e.target.dataset.pair;if(p){[$('#mA').value,$('#mB').value]=p.split(',');renderMult()}});
+
+/* ---------- FILL ---------- */
+const GIVEN={phi:5,tau:4,sigma:4,mu:0};
+function buildFill(){
+  let h='<tr><th>n</th>'+Array.from({length:12},(_,i)=>`<th>${i+1}</th>`).join('')+'</tr>';
+  for(const k in F){h+=`<tr><th>${SYM[k]}(n)</th>`;
+    for(let n=1;n<=12;n++)h+=n<=GIVEN[k]?`<td>${show(F[k](n))}</td>`:`<td><input type="text" inputmode="text" data-k="${k}" data-n="${n}" aria-label="${SYM[k]}(${n})"></td>`;
+    h+='</tr>'}
+  $('#fillT').innerHTML=h;fillProg();
+}
+function fillProg(){const a=$$('#fillT input');$('#fillP').textContent=`ถูกแล้ว ${a.filter(i=>i.classList.contains('good')).length} จาก ${a.length} ช่อง`}
+$('#fillT').addEventListener('input',e=>{const i=e.target,v=i.value.trim().replace('−','-');
+  i.classList.remove('good','wrong');i.parentElement.classList.remove('g','w');
+  if(v!==''&&v!=='-'){const ok=+v===F[i.dataset.k](+i.dataset.n);i.classList.add(ok?'good':'wrong');i.parentElement.classList.add(ok?'g':'w')}fillProg()});
+$('#fillShow').onclick=()=>{$$('#fillT input').forEach(i=>{if(!i.classList.contains('good')){i.value=show(F[i.dataset.k](+i.dataset.n));i.classList.remove('wrong');i.classList.add('good');i.parentElement.classList.remove('w');i.parentElement.classList.add('g')}});fillProg()};
+$('#fillReset').onclick=buildFill;
+
+/* ---------- QUIZ ---------- */
+const Q={lv:0,t:75,score:0,combo:0,paused:false,timer:null,cur:null};
+const best=lv=>{try{return +localStorage.getItem('ntf-best-'+lv)||0}catch(e){return 0}};
+const showBest=()=>$('#qzBest').textContent='คะแนนสูงสุดของระดับนี้: '+best(Q.lv);
+$$('.lv').forEach(b=>b.onclick=()=>{$$('.lv').forEach(x=>x.classList.remove('on'));b.classList.add('on');Q.lv=+b.dataset.lv;showBest()});
+function minTau(k,skip=0){for(let n=1;n<5000;n++)if(F.tau(n)===k&&skip--===0)return n}
+function makeQ(){
+  if(Q.lv===2&&Math.random()<.3){
+    const k=[3,4,6,8,9,10,12][rnd(0,6)],ans=minTau(k);
+    return {text:`n ที่น้อยที่สุดซึ่ง τ(n) = ${k}`,ans,choices:shuffle([ans,minTau(k,1),minTau(k,2),minTau(k-1)]),
+      sol:[`ต้องการ (a₁+1)(a₂+1)… = ${k} ลองเขียน ${k} เป็นผลคูณทุกแบบ`,`ให้เลขชี้กำลังที่มากกว่าอยู่กับจำนวนเฉพาะที่เล็กกว่า แล้วเทียบค่าของแต่ละแบบ`,`ค่าน้อยที่สุดคือ ${ans} = ${facPlain(ans)} <span class="result">${ans}</span>`]};
+  }
+  const fns=Q.lv===0?['phi','tau']:['phi','tau','sigma','mu'],fn=fns[rnd(0,fns.length-1)],max=[30,120,600][Q.lv];
+  let n;do{n=rnd(2,max)}while(n>50&&factor(n).some(([p])=>p>13));
+  const ans=F[fn](n);let choices;
+  if(fn==='mu')choices=[-1,0,1];
+  else{const pool=[...new Set([F.phi(n),F.tau(n),F.sigma(n),n-1,n+1,ans+1,ans-1,ans+2,ans-2,ans*2,ans+4])].filter(v=>v>0&&v!==ans);
+    choices=shuffle([ans,...shuffle(pool).slice(0,3)])}
+  return {text:`${SYM[fn]}(${n}) = ?`,ans,choices,sol:explain(fn,n)};
+}
+function nextQ(){
+  Q.cur=makeQ();Q.paused=false;$('#qzFb').innerHTML='';$('#qzQ').textContent=Q.cur.text;
+  $('#qzCh').innerHTML=Q.cur.choices.map(c=>`<button data-v="${c}">${show(c)}</button>`).join('');
+}
+function hud(){$('#qzT').textContent=Q.t;$('#qzS').textContent=Q.score;$('#qzC').textContent='×'+Math.min(5,Q.combo+1);$('#qzBar').style.width=(Q.t/75*100)+'%'}
+$('#qzGo').onclick=()=>{Q.t=75;Q.score=0;Q.combo=0;$('#qzStart').hidden=true;$('#qzPlay').hidden=false;nextQ();hud();
+  clearInterval(Q.timer);Q.timer=setInterval(()=>{if(Q.paused)return;Q.t--;hud();if(Q.t<=0)endQ()},1000)};
+$('#qzCh').onclick=e=>{const b=e.target.closest('button');if(!b||Q.paused)return;Q.paused=true;
+  const v=+b.dataset.v,ok=v===Q.cur.ans;
+  $$('#qzCh button').forEach(x=>{x.disabled=true;if(+x.dataset.v===Q.cur.ans)x.classList.add('right')});
+  if(ok){Q.score+=10*Math.min(5,Q.combo+1);Q.combo++;hud();setTimeout(()=>{if(Q.t>0)nextQ()},550)}
+  else{b.classList.add('wrongc');Q.combo=0;hud();
+    $('#qzFb').innerHTML=`<div class="banner no">ยังไม่ถูก ลองไล่ตามขั้นตอนนี้</div>${stepsHTML(Q.cur.sol)}<button class="go" id="qzNext">ข้อต่อไป</button>`;
+    $('#qzNext').onclick=nextQ;$('#qzNext').focus()}
+};
+function endQ(){clearInterval(Q.timer);Q.paused=true;const old=best(Q.lv),nb=Q.score>old;
+  if(nb){try{localStorage.setItem('ntf-best-'+Q.lv,Q.score)}catch(e){}}
+  $('#qzCh').innerHTML='';$('#qzQ').textContent='หมดเวลา';
+  $('#qzFb').innerHTML=`<div class="banner ok">ได้ ${Q.score} คะแนน ${nb?'เป็นสถิติใหม่ของระดับนี้':`(สถิติเดิม ${old})`}</div><button class="go" id="qzAgain">เล่นอีกรอบ</button>`;
+  $('#qzAgain').onclick=()=>{$('#qzStart').hidden=false;$('#qzPlay').hidden=true;showBest()}}
+
+/* ---------- COPRIME GAME ---------- */
+const C={n:12,sel:new Set(),done:false,score:0};
+function cpNew(){do{C.n=rnd(8,36)}while(factor(C.n).length===1&&factor(C.n)[0][1]===1);C.sel=new Set();C.done=false;$('#cpFb').innerHTML='';cpDraw()}
+function cpDraw(){
+  $('#cpQ').innerHTML=`n = ${C.n}`;
+  let h='';for(let m=1;m<=C.n;m++){const co=gcd(m,C.n)===1,s=C.sel.has(m);
+    const cls=!C.done?(s?'sel':''):(s&&co?'keep':s&&!co?'bad':!s&&co?'miss':'');
+    h+=`<button class="c ${cls}" data-m="${m}" aria-pressed="${s}" ${C.done?'disabled':''}>${m}</button>`}
+  $('#cpCells').innerHTML=h;$('#cpCheck').disabled=C.done;
+}
+$('#cpCells').onclick=e=>{const m=+e.target.dataset.m;if(!m||C.done)return;C.sel.has(m)?C.sel.delete(m):C.sel.add(m);cpDraw()};
+$('#cpCheck').onclick=()=>{C.done=true;let miss=0,bad=0;
+  for(let m=1;m<=C.n;m++){const co=gcd(m,C.n)===1;if(co&&!C.sel.has(m))miss++;if(!co&&C.sel.has(m))bad++}
+  const ok=!miss&&!bad;if(ok){C.score++;$('#cpScore').textContent=C.score}
+  cpDraw();
+  $('#cpFb').innerHTML=`<div class="banner ${ok?'ok':'no'}">${ok?`ถูกครบ เก็บได้ ${C.sel.size} จำนวน ตรงกับ φ(${C.n}) = ${F.phi(C.n)}`:`เลือกเกินมา ${bad} ตัว (สีแดง ✗) และตกหล่น ${miss} ตัว (เส้นประ) คำตอบคือ φ(${C.n}) = ${F.phi(C.n)}`}</div>${stepsHTML(explain('phi',C.n))}`;
+};
+$('#cpHint').onclick=()=>{if(!C.done)$('#cpFb').innerHTML=`<div class="banner ok">${C.n} = ${facPlain(C.n)} ดังนั้นจำนวนที่ต้องเว้นคือพหุคูณของ ${factor(C.n).map(x=>x[0]).join(' และ ')}</div>`};
+$('#cpNext').onclick=cpNew;
+
+/* ---------- PROOFS ---------- */
+const isPrime=n=>n>1&&factor(n).length===1&&factor(n)[0][1]===1;
+const SD='Σ<sub>d|n</sub>';
+const PROOFS=[
+ {t:'τ(n) เป็นคี่',claim:'τ(n) เป็นจำนวนคี่ ก็ต่อเมื่อ n เป็นกำลังสองสมบูรณ์',
+  idea:'ใช้สูตร τ(n) = (a₁+1)(a₂+1)…(a<sub>k</sub>+1) แล้วถามว่าผลคูณจะเป็นคี่ได้เมื่อไร',
+  test:n=>`τ(${n}) = ${F.tau(n)} เป็นจำนวน${F.tau(n)%2?'คี่':'คู่'} และ ${n} ${Number.isInteger(Math.sqrt(n))?`= ${Math.sqrt(n)}² เป็นกำลังสองสมบูรณ์`:'ไม่เป็นกำลังสองสมบูรณ์'}`,
+  steps:['เขียน n = p₁<sup>a₁</sup>p₂<sup>a₂</sup>…p<sub>k</sub><sup>a<sub>k</sub></sup> จะได้ τ(n) = (a₁+1)(a₂+1)…(a<sub>k</sub>+1)',
+   'ผลคูณของจำนวนเต็มเป็นจำนวนคี่ ก็ต่อเมื่อ ตัวคูณทุกตัว a<sub>i</sub>+1 เป็นจำนวนคี่',
+   'a<sub>i</sub>+1 เป็นจำนวนคี่ ก็ต่อเมื่อ a<sub>i</sub> เป็นจำนวนคู่ เขียนได้ว่า a<sub>i</sub> = 2b<sub>i</sub>',
+   'a<sub>i</sub> = 2b<sub>i</sub> ทุกตัว ก็ต่อเมื่อ n = (p₁<sup>b₁</sup>…p<sub>k</sub><sup>b<sub>k</sub></sup>)² นั่นคือ n เป็นกำลังสองสมบูรณ์',
+   'ทุกขั้นเป็น “ก็ต่อเมื่อ” จึงสรุปได้ว่า τ(n) เป็นจำนวนคี่ ก็ต่อเมื่อ n เป็นกำลังสองสมบูรณ์']},
+ {t:'σ(n) = n + 1',claim:'σ(n) = n + 1 ก็ต่อเมื่อ n เป็นจำนวนเฉพาะ',
+  idea:'1 และ n เป็นตัวหารของ n เสมอ และรวมกันได้ n + 1 พอดี จึงต้องไม่มีตัวหารอื่นเหลืออีก',
+  test:n=>`σ(${n}) = ${F.sigma(n)} ส่วน n + 1 = ${n+1} ${F.sigma(n)===n+1?'เท่ากัน':'ไม่เท่ากัน'} และ ${n} ${isPrime(n)?'เป็น':'ไม่เป็น'}จำนวนเฉพาะ`,
+  steps:['(⇐) ถ้า n เป็นจำนวนเฉพาะ ตัวหารบวกของ n มีเพียง 1 และ n จึงได้ σ(n) = n + 1',
+   '(⇒) สมมติว่า σ(n) = n + 1 จะได้ n ≠ 1 เพราะ σ(1) = 1 ≠ 2',
+   'เมื่อ n &gt; 1 จำนวน 1 และ n เป็นตัวหารที่ต่างกัน ซึ่งรวมกันได้ n + 1 แล้ว',
+   'ถ้ามีตัวหาร d อื่นซึ่ง 1 &lt; d &lt; n จะได้ σ(n) ≥ 1 + d + n &gt; n + 1 ขัดแย้งกับสมมติฐาน',
+   'ดังนั้น n ไม่มีตัวหารบวกอื่นนอกจาก 1 และ n นั่นคือ n เป็นจำนวนเฉพาะ']},
+ {t:'φ(pᵏ)',claim:'ถ้า p เป็นจำนวนเฉพาะ และ k เป็นจำนวนเต็มบวก แล้ว φ(p<sup>k</sup>) = p<sup>k</sup> − p<sup>k−1</sup>',
+  idea:'นับส่วนที่ “ไม่ใช่” แทน จำนวนที่ไม่เป็นจำนวนเฉพาะสัมพัทธ์กับ p<sup>k</sup> คือพหุคูณของ p เท่านั้น',
+  test:n=>{const f=factor(n);return f.length===1?`${n} = ${pw(f[0][0],f[0][1])} พหุคูณของ ${f[0][0]} ที่ไม่เกิน ${n} มี ${n/f[0][0]} จำนวน จึงได้ φ(${n}) = ${n} − ${n/f[0][0]} = ${F.phi(n)}`:`${n} ไม่ใช่กำลังของจำนวนเฉพาะ ลองใส่ 8, 27, 49 หรือ 125`},
+  steps:['พิจารณา 1, 2, …, p<sup>k</sup> จำนวน m ไม่ถูกนับใน φ(p<sup>k</sup>) ก็ต่อเมื่อ (m, p<sup>k</sup>) &gt; 1',
+   'ตัวหารของ p<sup>k</sup> ที่มากกว่า 1 ล้วนหารด้วย p ลงตัว จึงได้ว่า (m, p<sup>k</sup>) &gt; 1 ก็ต่อเมื่อ p | m',
+   'พหุคูณของ p ที่ไม่เกิน p<sup>k</sup> คือ 1·p, 2·p, …, p<sup>k−1</sup>·p มีทั้งหมด p<sup>k−1</sup> จำนวน',
+   'นำไปลบออกจากจำนวนทั้งหมด p<sup>k</sup> จำนวน จะได้ φ(p<sup>k</sup>) = p<sup>k</sup> − p<sup>k−1</sup>']},
+ {t:'φ(n) เป็นคู่',claim:'ถ้า n ≥ 3 แล้ว φ(n) เป็นจำนวนคู่',
+  idea:'แยกกรณีตามว่า n มีตัวประกอบเฉพาะที่เป็นจำนวนคี่หรือไม่ แล้วหาตัวประกอบ 2 ใน φ(n)',
+  test:n=>n<3?'ลองใส่ n ≥ 3':`φ(${n}) = ${F.phi(n)} เป็นจำนวน${F.phi(n)%2?'คี่':'คู่'}`,
+  steps:['กรณีที่ 1: n มีตัวประกอบเฉพาะ p ที่เป็นจำนวนคี่ เขียน n = p<sup>a</sup>m โดยที่ (p, m) = 1',
+   'φ เป็นฟังก์ชันการคูณ จึงได้ φ(n) = φ(p<sup>a</sup>)φ(m) = p<sup>a−1</sup>(p − 1)φ(m)',
+   'p เป็นจำนวนคี่ ดังนั้น p − 1 เป็นจำนวนคู่ จึงได้ว่า φ(n) เป็นจำนวนคู่ในกรณีนี้',
+   'กรณีที่ 2: n ไม่มีตัวประกอบเฉพาะที่เป็นจำนวนคี่ จะได้ n = 2<sup>a</sup> และจาก n ≥ 3 จึงได้ a ≥ 2',
+   'φ(2<sup>a</sup>) = 2<sup>a−1</sup> โดย a − 1 ≥ 1 จึงเป็นจำนวนคู่ สรุปว่าทั้งสองกรณี φ(n) เป็นจำนวนคู่']},
+ {t:'Σ φ(d) = n',claim:`${SD} φ(d) = n สำหรับทุกจำนวนเต็มบวก n`,
+  idea:'แบ่งจำนวน 1, 2, …, n ออกเป็นกลุ่มตามค่า ห.ร.ม. กับ n แล้วนับสมาชิกสองแบบ',
+  test:n=>{const D=divisors(n);return `ตัวหารของ ${n} คือ ${D.join(', ')}<br>ผลรวม φ(d) = ${D.map(d=>F.phi(d)).join(' + ')} = ${D.reduce((s,d)=>s+F.phi(d),0)}`},
+  steps:['สำหรับตัวหาร d ของ n ให้ S<sub>d</sub> = { m : 1 ≤ m ≤ n และ (m, n) = d }',
+   'จำนวน m แต่ละตัวใน 1, 2, …, n อยู่ใน S<sub>d</sub> เพียงกลุ่มเดียว ดังนั้น n = Σ<sub>d|n</sub> |S<sub>d</sub>|',
+   'm ∈ S<sub>d</sub> ก็ต่อเมื่อ m = dt โดยที่ 1 ≤ t ≤ n/d และ (t, n/d) = 1',
+   'จำนวน t ดังกล่าวมี φ(n/d) ตัว จึงได้ |S<sub>d</sub>| = φ(n/d) และ n = Σ<sub>d|n</sub> φ(n/d)',
+   'เมื่อ d วิ่งทั่วตัวหารของ n ค่า n/d ก็วิ่งทั่วตัวหารของ n เช่นกัน จึงได้ Σ<sub>d|n</sub> φ(d) = n']},
+ {t:'Σ μ(d) = 0',claim:`ถ้า n &gt; 1 แล้ว ${SD} μ(d) = 0`,
+  idea:'ตัวหารที่ให้ μ ≠ 0 คือผลคูณของจำนวนเฉพาะที่ไม่ซ้ำกัน นับตามจำนวนตัวที่เลือกแล้วใช้ทฤษฎีบททวินาม',
+  test:n=>{const D=divisors(n);return `ตัวหารของ ${n} คือ ${D.join(', ')}<br>ผลรวม μ(d) = ${D.map(d=>`(${show(F.mu(d))})`).join(' + ')} = ${D.reduce((s,d)=>s+F.mu(d),0)}`},
+  steps:['เขียน n = p₁<sup>a₁</sup>…p<sub>k</sub><sup>a<sub>k</sub></sup> โดย k ≥ 1 ตัวหาร d ที่มีกำลังสองของจำนวนเฉพาะเป็นตัวประกอบให้ μ(d) = 0 จึงไม่ต้องนำมารวม',
+   'ตัวหารที่เหลือคือผลคูณของสมาชิกในสับเซตของ {p₁, …, p<sub>k</sub>} ถ้าสับเซตมี j ตัว จะได้ μ(d) = (−1)<sup>j</sup>',
+   'สับเซตที่มี j ตัวมี C(k, j) แบบ ดังนั้น Σ<sub>d|n</sub> μ(d) = Σ<sub>j=0</sub><sup>k</sup> C(k, j)(−1)<sup>j</sup>',
+   'โดยทฤษฎีบททวินาม ผลรวมทางขวาเท่ากับ (1 + (−1))<sup>k</sup>',
+   'เพราะ k ≥ 1 จึงได้ (1 − 1)<sup>k</sup> = 0']},
+ {t:'ผลคูณตัวหาร',claim:'ผลคูณของตัวหารบวกทั้งหมดของ n เท่ากับ n<sup>τ(n)/2</sup>',
+  idea:'จับคู่ตัวหาร d กับ n/d ซึ่งคูณกันได้ n เสมอ เขียนผลคูณสองแบบแล้วคูณกัน',
+  test:n=>{const D=divisors(n),P=D.reduce((s,d)=>s*BigInt(d),1n),t=D.length;return `ตัวหารของ ${n} คือ ${D.join(', ')} (τ = ${t})<br>ผลคูณ = ${P} และ ${n}<sup>${t}/2</sup> = ${t%2?BigInt(Math.round(Math.sqrt(n)))**BigInt(t):BigInt(n)**BigInt(t/2)}`},
+  steps:['ให้ P เป็นผลคูณของตัวหารบวกทั้งหมดของ n นั่นคือ P = Π<sub>d|n</sub> d',
+   'เมื่อ d วิ่งทั่วตัวหารของ n ค่า n/d ก็วิ่งทั่วตัวหารของ n เช่นกัน จึงเขียนได้อีกแบบว่า P = Π<sub>d|n</sub> (n/d)',
+   'คูณสองสมการเข้าด้วยกัน ได้ P² = Π<sub>d|n</sub> d·(n/d) = Π<sub>d|n</sub> n',
+   'ผลคูณทางขวามี τ(n) พจน์ จึงได้ P² = n<sup>τ(n)</sup>',
+   'P เป็นจำนวนบวก ถอดรากที่สองได้ P = n<sup>τ(n)/2</sup>']},
+ {t:'φ(n) ≠ 14',claim:'ไม่มีจำนวนเต็มบวก n ซึ่ง φ(n) = 14',
+  idea:'ถ้า p | n แล้ว (p − 1) | φ(n) เงื่อนไขนี้จำกัดตัวประกอบเฉพาะของ n ให้เหลือไม่กี่ตัว',
+  test:()=>{let h='n ที่น้อยที่สุดซึ่ง φ(n) = v (ค้นถึง n = 2000): ';for(let v=2;v<=20;v+=2){let m=0;for(let n=1;n<=2000;n++)if(F.phi(n)===v){m=n;break}h+=`<span class="chip ${m?'':'sq'}">${v}: ${m||'ไม่มี'}</span>`}return h},
+  steps:['สมมติว่ามี n ซึ่ง φ(n) = 14 ถ้า p เป็นตัวประกอบเฉพาะของ n จะได้ (p − 1) | φ(n) ดังนั้น (p − 1) | 14',
+   'p − 1 ∈ {1, 2, 7, 14} จึงได้ p ∈ {2, 3, 8, 15} ซึ่งเป็นจำนวนเฉพาะเพียง 2 และ 3 ดังนั้น n = 2<sup>a</sup>3<sup>b</sup>',
+   'จากสูตร φ(2<sup>a</sup>3<sup>b</sup>) จะมีตัวประกอบเฉพาะได้เพียง 2 และ 3 เท่านั้น',
+   'แต่ 14 = 2 × 7 มี 7 เป็นตัวประกอบเฉพาะ จึงเกิดข้อขัดแย้ง',
+   'ดังนั้นไม่มีจำนวนเต็มบวก n ซึ่ง φ(n) = 14']},
+ {t:'μ สี่ตัวติดกัน',claim:'μ(n)μ(n+1)μ(n+2)μ(n+3) = 0 สำหรับทุกจำนวนเต็มบวก n',
+  idea:'ในจำนวนเต็มสี่ตัวเรียงติดกัน ต้องมีตัวหนึ่งที่ 4 หารลงตัว',
+  test:n=>[0,1,2,3].map(i=>`μ(${n+i}) = ${show(F.mu(n+i))}${(n+i)%4===0?' (4 หารลงตัว)':''}`).join(', '),
+  steps:['จำนวนเต็มสี่ตัวเรียงติดกัน n, n+1, n+2, n+3 ให้เศษจากการหารด้วย 4 ครบทั้ง 0, 1, 2, 3',
+   'จึงมีตัวหนึ่ง เรียกว่า m ซึ่ง 4 | m',
+   'เพราะ 4 = 2² จึงมีกำลังสองของจำนวนเฉพาะหาร m ลงตัว ดังนั้น μ(m) = 0',
+   'ผลคูณที่มีตัวคูณตัวหนึ่งเป็น 0 ย่อมเท่ากับ 0 จึงได้ μ(n)μ(n+1)μ(n+2)μ(n+3) = 0']}
+];
+const P={i:0,mode:'reveal',shown:1,order:[],checked:false,n:36};
+function pfShuffle(){const k=PROOFS[P.i].steps.length;do{P.order=shuffle([...Array(k).keys()])}while(P.order.every((v,i)=>v===i));P.checked=false}
+function renderProof(){
+  const p=PROOFS[P.i],k=p.steps.length;
+  let h=`<div class="row">${PROOFS.map((x,i)=>`<button class="sm ${i===P.i?'on':''}" data-pi="${i}">${x.t}</button>`).join('')}</div>
+  <div class="claim"><b>จงพิสูจน์ว่า</b> ${p.claim}</div>
+  <h2>ทดลองกับตัวเลขก่อน</h2>
+  <div class="row"><label>n = <input type="number" id="pfN" min="1" max="2000" value="${P.n}"></label></div>
+  <div id="pfTest">${p.test(P.n)}</div>
+  <h2>แนวคิดหลัก</h2><p>${p.idea}</p>
+  <div class="row"><button class="sm ${P.mode==='reveal'?'on':''}" data-pm="reveal">เปิดบทพิสูจน์ทีละขั้น</button>
+  <button class="sm ${P.mode==='order'?'on':''}" data-pm="order">เรียงลำดับขั้นเอง</button></div>`;
+  if(P.mode==='reveal'){
+    h+=stepsHTML(p.steps.slice(0,P.shown));
+    h+=P.shown<k?`<div class="row"><button class="go" data-pa="next">ขั้นถัดไป (${P.shown}/${k})</button><button class="sm" data-pa="all">เปิดทั้งหมด</button></div><p class="hint">ก่อนกด ลองเดาว่าขั้นถัดไปควรเป็นอะไร</p>`
+      :`<div class="banner ok">จบการพิสูจน์ ∎</div><button class="sm" data-pa="again">ซ่อนแล้วเริ่มใหม่</button>`;
+  }else{
+    const allOk=P.order.every((v,i)=>v===i);
+    h+='<p class="hint">ขั้นของบทพิสูจน์ถูกสลับไว้ ใช้ปุ่ม ▲ ▼ จัดให้เหตุผลต่อเนื่องกัน</p><ol class="steps">'+P.order.map((v,i)=>
+      `<li class="mv ${P.checked?(v===i?'okp':'nop'):''}"><span class="mvb"><button class="sm" data-up="${i}" ${i===0?'disabled':''} aria-label="เลื่อนขึ้น">▲</button> <button class="sm" data-dn="${i}" ${i===k-1?'disabled':''} aria-label="เลื่อนลง">▼</button></span>${P.checked?(v===i?'<b class="ok">✓</b> ':'<b class="no">✗</b> '):''}${p.steps[v]}</li>`).join('')+'</ol>';
+    h+=`<div class="row"><button class="go" data-pa="check">ตรวจลำดับ</button><button class="sm" data-pa="shuf">สลับใหม่</button></div>`;
+    if(P.checked)h+=allOk?'<div class="banner ok">ลำดับถูกต้องทั้งหมด ∎</div>':'<div class="banner no">ขั้นที่มีเครื่องหมาย ✗ ยังอยู่ผิดตำแหน่ง ลองถามว่าขั้นนั้นต้องใช้ผลจากขั้นไหนก่อน</div>';
+  }
+  $('#proofOut').innerHTML=h;
+}
+$('#proofOut').addEventListener('input',e=>{if(e.target.id==='pfN'&&e.target.value!==''){P.n=Math.max(1,Math.min(2000,Math.floor(+e.target.value)||1));$('#pfTest').innerHTML=PROOFS[P.i].test(P.n)}});
+$('#proofOut').addEventListener('click',e=>{
+  const d=e.target.dataset,k=PROOFS[P.i].steps.length;let hit=true;
+  if(d.pi!==undefined){P.i=+d.pi;P.shown=1;pfShuffle()}
+  else if(d.pm){P.mode=d.pm;if(d.pm==='order')pfShuffle()}
+  else if(d.pa==='next')P.shown++;
+  else if(d.pa==='all')P.shown=k;
+  else if(d.pa==='again')P.shown=1;
+  else if(d.pa==='check')P.checked=true;
+  else if(d.pa==='shuf')pfShuffle();
+  else if(d.up!==undefined){const i=+d.up;[P.order[i-1],P.order[i]]=[P.order[i],P.order[i-1]];P.checked=false}
+  else if(d.dn!==undefined){const i=+d.dn;[P.order[i+1],P.order[i]]=[P.order[i],P.order[i+1]];P.checked=false}
+  else hit=false;
+  if(hit)renderProof();
+});
+pfShuffle();renderProof();
+
+/* ---------- GLOSSARY ---------- */
+const GL=[
+ {k:'จำนวนเฉพาะสัมพัทธ์',d:'จำนวนเต็มสองจำนวนที่มี ห.ร.ม. เท่ากับ 1 คือไม่มีตัวประกอบเฉพาะร่วมกันเลย เขียนว่า (m, n) = 1 ตัวจำนวนเองไม่จำเป็นต้องเป็นจำนวนเฉพาะ',ex:'8 กับ 15 เป็นจำนวนเฉพาะสัมพัทธ์ เพราะ 8 = 2³ และ 15 = 3 × 5 ไม่มีจำนวนเฉพาะซ้ำกัน ส่วน 6 กับ 9 ไม่เป็น เพราะ 3 หารลงตัวทั้งคู่'},
+ {k:'ฟังก์ชันการคูณ',d:'ฟังก์ชัน f บนจำนวนเต็มบวกที่ f(mn) = f(m)f(n) ทุกครั้งที่ (m, n) = 1 ทำให้คำนวณจากกำลังของจำนวนเฉพาะทีละตัวแล้วนำมาคูณกันได้',ex:'φ(12) = φ(4)φ(3) = 2 × 2 = 4 ได้เพราะ (4, 3) = 1 แต่ φ(12) ≠ φ(2)φ(6) เพราะ (2, 6) = 2'},
+ {k:'ตัวประกอบเฉพาะ',d:'จำนวนเฉพาะที่หารจำนวนนั้นลงตัว',ex:'ตัวประกอบเฉพาะของ 60 คือ 2, 3 และ 5'},
+ {k:'แยกตัวประกอบ',d:'การเขียนจำนวนเต็มบวกเป็นผลคูณของกำลังของจำนวนเฉพาะที่ต่างกัน ซึ่งเขียนได้แบบเดียวเท่านั้น (รูปแบบบัญญัติ)',ex:'360 = 2³ × 3² × 5'},
+ {k:'กำลังสองสมบูรณ์',d:'จำนวนที่เขียนได้เป็น k² สำหรับจำนวนเต็ม k บางตัว เลขชี้กำลังในรูปแยกตัวประกอบจะเป็นจำนวนคู่ทุกตัว',ex:'36 = 6² = 2² × 3² เป็นกำลังสองสมบูรณ์ ส่วน 12 = 2² × 3 ไม่เป็น'},
+ {k:'จำนวนสมบูรณ์',d:'จำนวนเต็มบวก n ที่ผลรวมของตัวหารบวกทั้งหมดเท่ากับ 2n หรือพูดอีกแบบว่า ผลรวมของตัวหารที่น้อยกว่าตัวมันเองเท่ากับ n พอดี',ex:'6 เป็นจำนวนสมบูรณ์ เพราะ 1 + 2 + 3 = 6 และ σ(6) = 12'},
+ {k:'ทฤษฎีบททวินาม',d:'(x + y)ᵏ เท่ากับผลรวมของ C(k, j)·xᵏ⁻ʲ·yʲ เมื่อ j = 0 ถึง k',ex:'แทน x = 1, y = −1 ได้ C(k,0) − C(k,1) + C(k,2) − … = (1 − 1)ᵏ = 0 เมื่อ k ≥ 1'},
+ {k:'จำนวนเฉพาะ',d:'จำนวนเต็มที่มากกว่า 1 และมีตัวหารบวกเพียงสองตัว คือ 1 กับตัวมันเอง',ex:'2, 3, 5, 7, 11, 13 เป็นจำนวนเฉพาะ ส่วน 1 ไม่ใช่จำนวนเฉพาะ และ 9 = 3 × 3 ไม่ใช่'},
+ {k:'เลขชี้กำลัง',d:'จำนวนที่บอกว่าฐานถูกคูณซ้ำกี่ครั้ง ในรูปแยกตัวประกอบจะบอกว่าจำนวนเฉพาะแต่ละตัวปรากฏกี่ครั้ง',ex:'ใน 72 = 2³ × 3² เลขชี้กำลังของ 2 คือ 3 และของ 3 คือ 2'},
+ {k:'ตัวหารบวก',d:'จำนวนเต็มบวก d ที่หาร n ลงตัว คือมีจำนวนเต็ม k ซึ่ง n = dk เขียนว่า d | n',ex:'ตัวหารบวกของ 12 คือ 1, 2, 3, 4, 6, 12'},
+ {k:'ก็ต่อเมื่อ',d:'A ก็ต่อเมื่อ B หมายความว่า A กับ B จริงพร้อมกันหรือเท็จพร้อมกันเสมอ การพิสูจน์ต้องทำสองทิศ คือ ถ้า A แล้ว B (⇒) และ ถ้า B แล้ว A (⇐)',ex:'n เป็นจำนวนคู่ ก็ต่อเมื่อ n² เป็นจำนวนคู่'},
+ {k:'ห.ร.ม.',d:'ตัวหารร่วมมาก คือจำนวนเต็มบวกที่มากที่สุดที่หารทั้งสองจำนวนลงตัว เขียนว่า (m, n)',ex:'(12, 18) = 6 และ (8, 15) = 1'},
+ {k:'พหุคูณ',d:'พหุคูณของ p คือจำนวนที่ p หารลงตัว ได้แก่ p, 2p, 3p, …',ex:'พหุคูณของ 3 ที่ไม่เกิน 12 คือ 3, 6, 9, 12'},
+ {k:'ตัวหาร',d:'จำนวนเต็ม d ที่หาร n ลงตัว คือมีจำนวนเต็ม k ซึ่ง n = dk เขียนว่า d | n ในบทนี้สนใจเฉพาะตัวหารที่เป็นบวก',ex:'3 เป็นตัวหารของ 12 เพราะ 12 = 3 × 4 แต่ 5 ไม่เป็น'}
+];
+const SYMS=[
+ ['(m, n)','ห.ร.ม. ของ m และ n เช่น (12, 18) = 6'],
+ ['d | n','d หาร n ลงตัว เช่น 3 | 12 ส่วน 5 ∤ 12'],
+ ['φ(n)','จำนวนของจำนวนเต็มบวกที่ไม่เกิน n และเป็นจำนวนเฉพาะสัมพัทธ์กับ n เช่น φ(12) = 4 นับจาก 1, 5, 7, 11'],
+ ['τ(n)','จำนวนตัวหารบวกทั้งหมดของ n เช่น τ(12) = 6'],
+ ['σ(n)','ผลรวมของตัวหารบวกทั้งหมดของ n เช่น σ(12) = 1 + 2 + 3 + 4 + 6 + 12 = 28'],
+ ['μ(n)','ฟังก์ชันเมอบิอุส มีค่า 1, −1 หรือ 0 เช่น μ(6) = 1, μ(30) = −1, μ(12) = 0'],
+ ['Σ<sub>d|n</sub> f(d)','ผลรวมของ f(d) โดย d วิ่งทั่วตัวหารบวกทุกตัวของ n เช่น n = 6 คือ f(1) + f(2) + f(3) + f(6)'],
+ ['Π<sub>d|n</sub> f(d)','เหมือน Σ แต่เปลี่ยนจากบวกเป็นคูณ'],
+ ['C(k, j)','จำนวนวิธีเลือกของ j ชิ้นจาก k ชิ้น เช่น C(4, 2) = 6'],
+ ['A ⇒ B, A ⇐ B','ถ้า A แล้ว B และ ถ้า B แล้ว A ตามลำดับ'],
+ ['∎','เครื่องหมายจบการพิสูจน์']
+];
+const glById=Object.fromEntries(GL.map(g=>[g.k,g]));
+$('#glList').innerHTML=[...GL].sort((a,b)=>a.k.localeCompare(b.k,'th')).map(g=>`<dt>${g.k}</dt><dd>${g.d}<div class="ex">ตัวอย่าง: ${g.ex}</div></dd>`).join('');
+$('#symList').innerHTML=SYMS.map(([s,d])=>`<dt>${s}</dt><dd>${d}</dd>`).join('');
+function renderG(){
+  const a=Math.max(1,Math.min(999,+$('#gA').value||1)),b=Math.max(1,Math.min(999,+$('#gB').value||1)),g=gcd(a,b);
+  const com=new Set(divisors(g)),row=n=>divisors(n).map(d=>`<span class="chip ${com.has(d)?'sq':''}">${d}</span>`).join('');
+  $('#gOut').innerHTML=`<p>ตัวหารบวกของ ${a} = ${facPlain(a)}<br>${row(a)}</p><p>ตัวหารบวกของ ${b} = ${facPlain(b)}<br>${row(b)}</p>
+  <div class="banner ${g===1?'ok':'no'}">ตัวหารร่วม (สีเหลือง) คือ ${[...com].join(', ')} ดังนั้น (${a}, ${b}) = ${g} ${g===1?`จึงเป็นจำนวนเฉพาะสัมพัทธ์กัน`:`จึงไม่เป็นจำนวนเฉพาะสัมพัทธ์กัน`}</div>`;
+}
+$('#gA').oninput=$('#gB').oninput=renderG;renderG();
+const glRe=new RegExp(GL.map(g=>g.k.replace(/\./g,'\\.')).join('|'),'g');
+function glossify(root){
+  if(!root||root.nodeType!==1)return;
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),nodes=[];
+  while(w.nextNode()){const t=w.currentNode;if(!t.parentElement||t.parentElement.closest('button,.term,dialog,#gloss,nav,h1,script,style'))continue;glRe.lastIndex=0;if(glRe.test(t.nodeValue))nodes.push(t)}
+  for(const t of nodes){const fr=document.createDocumentFragment(),s=t.nodeValue;let last=0,m;glRe.lastIndex=0;
+    while((m=glRe.exec(s))){fr.append(s.slice(last,m.index));const sp=document.createElement('span');sp.className='term';sp.tabIndex=0;sp.setAttribute('role','button');sp.textContent=m[0];fr.append(sp);last=m.index+m[0].length}
+    fr.append(s.slice(last));t.replaceWith(fr)}
+}
+const wrapEl=$('.wrap'),obs=new MutationObserver(ms=>{obs.disconnect();
+  for(const m of ms)for(const nd of m.addedNodes)glossify(nd.nodeType===1?nd:nd.parentElement);
+  obs.observe(wrapEl,{childList:true,subtree:true})});
+function openTerm(el){const g=glById[el.textContent];if(!g)return;$('#dlgT').textContent=g.k;$('#dlgB').innerHTML=`<p>${g.d}</p><div class="ex">ตัวอย่าง: ${g.ex}</div>`;$('#dlg').showModal()}
+document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('.term');if(t)openTerm(t)});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('term')){e.preventDefault();openTerm(e.target)}});
+$('#dlgX').onclick=()=>$('#dlg').close();
+$('#dlg').addEventListener('click',e=>{if(e.target===$('#dlg'))$('#dlg').close()});
+
+/* ---------- NAV ---------- */
+$('#nav').onclick=e=>{const t=e.target.dataset.tab;if(!t)return;
+  $$('#nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));
+  ['lab','mult','fill','proof','game','gloss'].forEach(id=>$('#'+id).hidden=id!==t)};
+
+renderLab();renderMult();buildFill();showBest();cpNew();
+glossify(wrapEl);obs.observe(wrapEl,{childList:true,subtree:true});
+</script>
+</body>
+</html>
