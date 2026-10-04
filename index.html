@@ -29,7 +29,7 @@ body{margin:0;background:var(--paper);color:var(--ink);
   background-size:24px 24px;
   font-family:"IBM Plex Sans Thai","Leelawadee UI",Tahoma,sans-serif;font-size:16px;line-height:1.65}
 .num,h1,h2,.big,button,input,td,th{font-family:"Chakra Petch","IBM Plex Sans Thai","Leelawadee UI",Tahoma,sans-serif}
-.wrap{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 96px}
 header h1{font-size:clamp(1.7rem,5vw,2.6rem);line-height:1.2;margin:8px 0 4px;font-weight:700}
 header p{margin:0 0 16px;color:var(--soft);max-width:60ch}
 nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
@@ -114,6 +114,38 @@ dl.gl dd{margin:2px 0 0;max-width:68ch}
 #cpCells .c.bad::after{content:"✗";font-size:.7em;margin-left:2px}
 .sg{font-size:.7em;margin-left:1px;align-self:flex-start;font-weight:700}
 footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--line);color:var(--soft);font-size:.9rem;text-align:center}
+:root[data-theme="sepia"]{
+  --paper:#F4ECD8; --card:#FBF6E9; --ink:#3B2F20; --soft:#6B5B45; --line:#D8CBAA; --grid:#EADFC4;
+  --gold:#9A6A00; --goldbg:#F6E3A8; --teal:#0A6B5E; --tealbg:#D5EBDD; --red:#B5332B; --redbg:#F5D9D0;
+  --p0:#B5332B; --p1:#2468B5; --p2:#6B4FD8; --p3:#8A5E00; --p4:#0A6B5E;
+}
+:root[data-theme="contrast"]{
+  --paper:#FFFFFF; --card:#FFFFFF; --ink:#000000; --soft:#222222; --line:#000000; --grid:#FFFFFF;
+  --gold:#7A5200; --goldbg:#FFE680; --teal:#005A4E; --tealbg:#C8F2E8; --red:#A30000; --redbg:#FFD6D6;
+  --p0:#A30000; --p1:#0B3F91; --p2:#4B2BB8; --p3:#6B4700; --p4:#005A4E;
+}
+:root[data-theme="sepia"] button.go,:root[data-theme="contrast"] button.go{color:#fff}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.85em;line-height:1.2;margin:0 .15em}
+.fr>span:first-child{border-bottom:1.5px solid currentColor;padding:0 .3em}
+.fr>span:last-child{padding:0 .3em}
+sup .fr{font-size:.95em}
+#themes{font-size:.95rem;margin:0 0 14px}
+:root[data-theme="candy"],:root[data-theme="ocean"],:root[data-theme="lime"],:root[data-theme="sunset"]{
+  --card:#FFFFFF; --gold:#A85A00; --goldbg:#FFE9A8; --teal:#00766A; --tealbg:#CFF5EC; --red:#C2242B; --redbg:#FFD9DC;
+  --p0:#C2242B; --p1:#2468B5; --p2:#6B4FD8; --p3:#8A5E00; --p4:#00766A;
+}
+:root[data-theme="candy"]{--paper:#FFE3F1; --ink:#5A0F3C; --soft:#8A3B66; --line:#F5A8CF; --grid:#FFD0E6}
+:root[data-theme="ocean"]{--paper:#D6F1FF; --ink:#06386B; --soft:#2F5F8F; --line:#8CCBF2; --grid:#BDE6FF}
+:root[data-theme="lime"]{--paper:#E4F9C9; --ink:#1F4A0E; --soft:#4A6B32; --line:#A9DD78; --grid:#D2F2AC}
+:root[data-theme="sunset"]{--paper:#FFE8CC; --ink:#6B2A00; --soft:#94552A; --line:#FFBE85; --grid:#FFD9AE}
+:root[data-theme="candy"] button.go,:root[data-theme="ocean"] button.go,:root[data-theme="lime"] button.go,:root[data-theme="sunset"] button.go{color:#fff}
+#cheer{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:5;background:var(--gold);border-color:var(--ink);color:#fff;border-radius:999px;padding:10px 18px;font-weight:700;box-shadow:3px 3px 0 var(--ink)}
+#cheer:hover{background:var(--gold);filter:brightness(1.1)}
+#toast{position:fixed;left:50%;bottom:calc(74px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:6;width:max-content;max-width:min(440px,90vw);
+  background:var(--card);color:var(--ink);border:2px solid var(--ink);border-radius:14px;padding:14px 18px;font-size:1.1rem;font-weight:500;text-align:center;box-shadow:4px 4px 0 var(--gold)}
+#toast.pop{animation:pop .35s ease-out}
+@keyframes pop{from{transform:translateX(-50%) scale(.8);opacity:0}to{transform:translateX(-50%) scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){#toast.pop{animation:none}}
 [hidden]{display:none!important}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -123,6 +155,7 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--line);color:v
 <header>
   <h1>ฟังก์ชันในทฤษฎีจำนวน</h1>
   <p>ห้องทดลองสำหรับ φ(n), τ(n), σ(n) และ μ(n) ลองเปลี่ยนค่า n แล้วดูว่าแต่ละฟังก์ชัน “นับ” หรือ “รวม” อะไร ทีละขั้น</p>
+  <div class="row" id="themes"><span>โทนสี</span></div>
 </header>
 <nav role="tablist" id="nav">
   <button role="tab" data-tab="lab" aria-selected="true">สำรวจทีละฟังก์ชัน</button>
@@ -244,6 +277,9 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--line);color:v
 
 </div>
 
+<button id="cheer" aria-controls="toast">ขอกำลังใจ ✨</button>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const PC=['var(--p0)','var(--p1)','var(--p2)','var(--p3)','var(--p4)'];
@@ -262,6 +298,8 @@ const pw=(p,a)=>a===1?`${p}`:`${p}<sup>${a}</sup>`;
 const facPlain=n=>n===1?'1':factor(n).map(([p,a])=>pw(p,a)).join(' × ');
 const facTok=n=>n===1?'1':factor(n).map(([p,a],i)=>`<span class="tok" style="border-color:${PC[i%5]};color:${PC[i%5]}">${pw(p,a)}</span>`).join('×');
 const show=v=>v<0?'−'+(-v):''+v;
+const fr=(a,b)=>`<span class="fr"><span>${a}</span><span>${b}</span></span>`;
+const FX=s=>s.replace(/τ\(n\)\/2/g,fr('τ(n)','2')).replace(/n\/d/g,fr('n','d')).replace(/(\d+)\/2(?=<\/sup>)/g,(m,a)=>fr(a,'2')).replace(/1\/p/g,fr('1','p'));
 const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=rnd(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
 
@@ -278,7 +316,7 @@ function explain(fn,n){
     st.push('ตัวหารแต่ละตัวเลือกเลขชี้กำลังของ p ได้ตั้งแต่ 0 ถึง a รวม a + 1 แบบ: '+f.map(([p,a])=>`${p} เลือกได้ ${a+1} แบบ`).join(', '));
     st.push(`τ(${n}) = ${f.map(([,a])=>`(${a}+1)`).join('')} = ${f.map(([,a])=>a+1).join(' × ')} = <span class="result">${F.tau(n)}</span>`);
   }else if(fn==='sigma'){
-    st.push('ใช้ σ(p<sup>a</sup>) = 1 + p + … + p<sup>a</sup> = (p<sup>a+1</sup> − 1)/(p − 1): '+
+    st.push('ใช้ σ(p<sup>a</sup>) = 1 + p + … + p<sup>a</sup> = '+fr('p<sup>a+1</sup> − 1','p − 1')+': '+
       f.map(([p,a])=>`σ(${pw(p,a)}) = ${Array.from({length:a+1},(_,i)=>p**i).join(' + ')} = ${(p**(a+1)-1)/(p-1)}`).join(', '));
     st.push(`σ เป็นฟังก์ชันการคูณ จึงคูณกัน: σ(${n}) = ${f.map(([p,a])=>(p**(a+1)-1)/(p-1)).join(' × ')} = <span class="result">${F.sigma(n)}</span>`);
   }else{
@@ -288,7 +326,7 @@ function explain(fn,n){
   }
   return st;
 }
-const stepsHTML=a=>'<ol class="steps">'+a.map(s=>`<li>${s}</li>`).join('')+'</ol>';
+const stepsHTML=a=>FX('<ol class="steps">'+a.map(s=>`<li>${s}</li>`).join('')+'</ol>');
 
 /* ---------- LAB ---------- */
 const S={n:12,fn:'phi',step:0};
@@ -304,7 +342,7 @@ function renderLab(){
   $('#facOut').innerHTML=`${n} = ${facTok(n)}`+(factor(n).length===1&&factor(n)[0][1]===1?' <span class="hint">(จำนวนเฉพาะ)</span>':'');
   $('#four').innerHTML=Object.keys(F).map(k=>`<button data-fn="${k}" class="${S.fn===k?'on':''}" aria-pressed="${S.fn===k}">
     <span class="sym">${SYM[k]}(${n}) ${NAME[k]}</span><span class="val">${show(F[k](n))}</span></button>`).join('');
-  $('#view').innerHTML=({phi:viewPhi,tau:()=>viewDiv('tau'),sigma:()=>viewDiv('sigma'),mu:viewMu})[S.fn]();
+  $('#view').innerHTML=FX(({phi:viewPhi,tau:()=>viewDiv('tau'),sigma:()=>viewDiv('sigma'),mu:viewMu})[S.fn]());
 }
 $('#view').onclick=e=>{
   const a=e.target.dataset.act; if(!a) return;
@@ -320,7 +358,7 @@ function viewPhi(){
   <p class="hint">φ(n) คือจำนวนของจำนวนเต็มบวกที่ไม่เกิน n และเป็นจำนวนเฉพาะสัมพัทธ์กับ n วิธีนับอย่างเป็นระบบคือ ตัดพหุคูณของตัวประกอบเฉพาะของ n ออกทีละตัว</p>`;
   if(n<=200){
     let rem=n;const chain=[`เริ่มด้วย <b>${n}</b> จำนวน`];
-    for(let i=0;i<S.step;i++){const p=f[i][0];rem=rem/p*(p-1);chain.push(`<span style="color:${PC[i%5]}">× (1 − 1/${p})</span> เหลือ <b>${rem}</b>`)}
+    for(let i=0;i<S.step;i++){const p=f[i][0];rem=rem/p*(p-1);chain.push(`<span style="color:${PC[i%5]}">× (1 − ${fr(1,p)})</span> เหลือ <b>${rem}</b>`)}
     h+=`<div class="row">
       <button class="go" data-act="next" ${S.step>=k?'disabled':''}>${S.step<k?`ตัดพหุคูณของ ${f[S.step][0]}`:'ตัดครบแล้ว'}</button>
       <button class="sm" data-act="all" ${S.step>=k?'disabled':''}>ตัดทั้งหมด</button>
@@ -331,7 +369,7 @@ function viewPhi(){
       h+=ci>=0?`<div class="c x" style="--pc:${PC[ci%5]}">${m}</div>`:`<div class="c ${S.step>=k?'keep':''}">${m}</div>`;
     }
     h+='</div>';
-    if(S.step>=k)h+=`<div class="banner ok">เหลือ ${rem} จำนวน ทุกตัวเป็นจำนวนเฉพาะสัมพัทธ์กับ ${n} ดังนั้น φ(${n}) = ${rem}${k?` = ${n}${f.map(([p])=>`(1 − 1/${p})`).join('')}`:''}</div>`;
+    if(S.step>=k)h+=`<div class="banner ok">เหลือ ${rem} จำนวน ทุกตัวเป็นจำนวนเฉพาะสัมพัทธ์กับ ${n} ดังนั้น φ(${n}) = ${rem}${k?` = ${n}${f.map(([p])=>`(1 − ${fr(1,p)})`).join('')}`:''}</div>`;
     else h+=`<p class="hint">สังเกตว่าทุกครั้งที่ตัดพหุคูณของ p ออก จำนวนที่เหลือจะหายไป 1/p ของที่มีอยู่พอดี</p>`;
   }else h+=`<p class="hint">ภาพตารางแสดงได้เมื่อ n ≤ 200 สำหรับค่าที่ใหญ่กว่านี้ให้ดูวิธีคิดด้านล่าง</p>`;
   return h+'<h2>วิธีคิดจากสูตร</h2>'+stepsHTML(explain('phi',n));
@@ -571,9 +609,9 @@ function renderProof(){
     h+=`<div class="row"><button class="go" data-pa="check">ตรวจลำดับ</button><button class="sm" data-pa="shuf">สลับใหม่</button></div>`;
     if(P.checked)h+=allOk?'<div class="banner ok">ลำดับถูกต้องทั้งหมด ∎</div>':'<div class="banner no">ขั้นที่มีเครื่องหมาย ✗ ยังอยู่ผิดตำแหน่ง ลองถามว่าขั้นนั้นต้องใช้ผลจากขั้นไหนก่อน</div>';
   }
-  $('#proofOut').innerHTML=h;
+  $('#proofOut').innerHTML=FX(h);
 }
-$('#proofOut').addEventListener('input',e=>{if(e.target.id==='pfN'&&e.target.value!==''){P.n=Math.max(1,Math.min(2000,Math.floor(+e.target.value)||1));$('#pfTest').innerHTML=PROOFS[P.i].test(P.n)}});
+$('#proofOut').addEventListener('input',e=>{if(e.target.id==='pfN'&&e.target.value!==''){P.n=Math.max(1,Math.min(2000,Math.floor(+e.target.value)||1));$('#pfTest').innerHTML=FX(PROOFS[P.i].test(P.n))}});
 $('#proofOut').addEventListener('click',e=>{
   const d=e.target.dataset,k=PROOFS[P.i].steps.length;let hit=true;
   if(d.pi!==undefined){P.i=+d.pi;P.shown=1;pfShuffle()}
@@ -647,6 +685,25 @@ document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('term')){e.preventDefault();openTerm(e.target)}});
 $('#dlgX').onclick=()=>$('#dlg').close();
 $('#dlg').addEventListener('click',e=>{if(e.target===$('#dlg'))$('#dlg').close()});
+
+/* ---------- THEME ---------- */
+const THEMES=[['auto','ตามเครื่อง'],['light','สว่าง'],['sepia','ครีมถนอมสายตา'],['dark','มืด'],['contrast','คอนทราสต์สูง'],['candy','ชมพูลูกกวาด'],['ocean','ฟ้าทะเล'],['lime','เขียวมะนาว'],['sunset','ส้มตะวัน']];
+$('#themes').insertAdjacentHTML('beforeend',THEMES.map(([k,n])=>`<button class="sm" data-th="${k}">${n}</button>`).join(''));
+function setTheme(k){if(!THEMES.some(x=>x[0]===k))k='auto';
+  if(k==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',k);
+  try{localStorage.setItem('ntf-theme',k)}catch(e){}
+  $$('#themes button').forEach(b=>{b.classList.toggle('on',b.dataset.th===k);b.setAttribute('aria-pressed',b.dataset.th===k)})}
+$('#themes').onclick=e=>{if(e.target.dataset.th)setTheme(e.target.dataset.th)};
+let savedTheme='auto';try{savedTheme=localStorage.getItem('ntf-theme')||'auto'}catch(e){}
+setTheme(savedTheme);
+
+/* ---------- CHEER ---------- */
+const CHEERS=['ผิดได้ ไม่เป็นไร ทุกข้อที่ผิดคือข้อที่เรากำลังจะเข้าใจ','ค่อย ๆ แยกตัวประกอบไปทีละตัว เดี๋ยวคำตอบก็มาเอง','โจทย์ยากแปลว่าสมองกำลังได้ออกกำลัง สู้ต่ออีกนิด','คนเก่งทฤษฎีจำนวนทุกคนเคยงงกับ φ มาก่อนทั้งนั้น','วันนี้เข้าใจเพิ่มหนึ่งเรื่อง ก็เก่งกว่าเมื่อวานแล้ว','ลองกับตัวเลขเล็ก ๆ ก่อน แล้วค่อยมองหารูปแบบ ทำได้แน่นอน','พิสูจน์ไม่ออกในครั้งแรกเป็นเรื่องปกติ ลองเขียนสิ่งที่รู้ออกมาก่อน','พักหายใจลึก ๆ หนึ่งที แล้วกลับมาลุยต่อ','ความพยายามของเธอไม่เคยสูญเปล่า มันสะสมอยู่ในหัวทุกข้อ','ถามเมื่อสงสัย คือวิธีคิดของนักคณิตศาสตร์ตัวจริง','ช้าแต่เข้าใจ ดีกว่าเร็วแต่จำสูตรอย่างเดียว','มาถึงตรงนี้ได้ก็เก่งมากแล้ว ไปต่อกันอีกข้อ'];
+let cheerLast=-1,cheerT=null;
+$('#cheer').onclick=()=>{let i;do{i=rnd(0,CHEERS.length-1)}while(i===cheerLast);cheerLast=i;
+  const el=$('#toast');el.textContent=CHEERS[i];el.hidden=false;el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');
+  clearTimeout(cheerT);cheerT=setTimeout(()=>el.hidden=true,5000)};
+$('#toast').onclick=()=>$('#toast').hidden=true;
 
 /* ---------- NAV ---------- */
 $('#nav').onclick=e=>{const t=e.target.dataset.tab;if(!t)return;
