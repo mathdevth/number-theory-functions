@@ -4,6 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ฟังก์ชันในทฤษฎีจำนวน: ห้องทดลอง φ τ σ μ</title>
+<meta name="description" content="สื่อประกอบการติว สอวน. คณิตศาสตร์ ค่าย 1 เรื่องฟังก์ชันในทฤษฎีจำนวน φ τ σ μ เรียนรู้และทบทวนทีละขั้น พร้อมโจทย์ บทพิสูจน์ และเกม">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ฟังก์ชันในทฤษฎีจำนวน: ห้องทดลอง φ τ σ μ">
+<meta property="og:description" content="สื่อประกอบการติว สอวน. คณิตศาสตร์ ค่าย 1 เรียนรู้และทบทวน φ τ σ μ ทีละขั้น พร้อมโจทย์ บทพิสูจน์ และเกม">
+<meta property="og:locale" content="th_TH">
+<meta property="og:url" content="https://mathdevth.github.io/number-theory-functions/">
+<meta property="og:image" content="https://mathdevth.github.io/number-theory-functions/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://mathdevth.github.io/number-theory-functions/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%A2%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
 <style>
 :root{
@@ -27,7 +39,7 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--paper);color:var(--ink);
   background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
   background-size:24px 24px;
-  font-family:"IBM Plex Sans Thai","Leelawadee UI",Tahoma,sans-serif;font-size:16px;line-height:1.65}
+  font-family:"IBM Plex Sans Thai","Leelawadee UI",Tahoma,sans-serif;font-size:100%;line-height:1.65}
 .num,h1,h2,.big,button,input,td,th{font-family:"Chakra Petch","IBM Plex Sans Thai","Leelawadee UI",Tahoma,sans-serif}
 .wrap{max-width:980px;margin:0 auto;padding:20px 16px 96px}
 header h1{font-size:clamp(1.7rem,5vw,2.6rem);line-height:1.2;margin:8px 0 4px;font-weight:700}
@@ -166,7 +178,7 @@ ul.miss{list-style:none;padding:0;margin:8px 0;columns:2;column-gap:24px}
 @media (max-width:560px){ul.miss{columns:1}}
 ul.miss li{margin:3px 0;color:var(--soft);break-inside:avoid}
 ul.miss li.got{color:var(--ink);font-weight:500}
-.sumgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.sumgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:12px}
 .sumcard{border:1.5px solid var(--line);border-radius:10px;padding:10px 14px}
 .sumcard h3{margin:0 0 4px;font-family:"Chakra Petch","IBM Plex Sans Thai",sans-serif;font-size:1.1rem}
 .sumcard ul{margin:4px 0;padding-left:1.2em}
@@ -203,6 +215,45 @@ a.lk:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
   .scroll{overflow:visible}
   header h1{font-size:18pt;margin:0 0 8pt}
 }
+/* P1 sticky row header in fill table */
+.fill th:first-child{position:sticky;left:0;z-index:2;background:var(--paper);box-shadow:2px 0 0 var(--line)}
+.fill td,.fill th{padding:5px 6px}
+/* P2 theme menu stays on screen */
+#thList{max-width:calc(100vw - 32px)}
+@media (max-width:360px){#thList{grid-template-columns:max-content}#thList button{white-space:nowrap}}
+/* P6 cheer button + toast */
+#cheer{background:var(--goldbg);color:var(--ink)}
+#cheer:hover{background:var(--goldbg)}
+#toast{pointer-events:none}
+.note{color:var(--red);font-weight:500;margin:6px 0}
+/* P5 touch targets */
+@media (pointer:coarse){
+  button,a.lk,input[type=number],input[type=text],input[type=range],#themes summary{min-height:44px}
+  button.sm{min-width:44px}
+  #themes summary{display:inline-flex;align-items:center}
+  details:not(#themes)>summary{padding:10px 0}
+  .fill input{width:3.4em}
+  .cells{grid-template-columns:repeat(auto-fill,minmax(44px,1fr))}
+}
+/* P4 compact header + one-row menus on phones */
+@media (max-width:560px){
+  nav{flex-wrap:nowrap;gap:4px}
+  nav button{flex:1 1 0;min-width:0;padding:7px 2px;font-size:.92rem;white-space:nowrap}
+  #subnav{flex-wrap:nowrap;overflow-x:auto;margin-bottom:12px}
+  #subnav button{flex:none;white-space:nowrap}
+  body.inner header p,body.inner .hrow{display:none}
+  body.inner header h1{font-size:1.25rem;margin:0 0 8px}
+  body.inner .wrap{padding-top:10px}
+  #cheer{padding:8px 14px;font-size:.95rem}
+}
+.term:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+button:active:not(:disabled),a.lk:active{transform:translateY(1px);filter:brightness(.9)}
+@media print{#grFn,#doc .panel>.hint{display:none!important}}
+.stepnav{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;border-top:2px solid var(--line);padding-top:12px;margin:4px 0 18px}
+.dn{float:right;display:inline-flex;align-items:center;gap:6px;min-height:44px;margin:-8px 0 0 8px;cursor:pointer;font-size:.95rem}
+.dn input{width:22px;height:22px;accent-color:var(--teal)}
+.pq.done{border-left:6px solid var(--teal);background:var(--tealbg)}
+@media print{body.pq-only .pq{min-height:6cm}.pq.done{border-left-width:1.5px;background:none}}
 [hidden]{display:none!important}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -211,7 +262,7 @@ a.lk:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 <div class="wrap">
 <header>
   <h1>ฟังก์ชันในทฤษฎีจำนวน</h1>
-  <p>ห้องทดลองสำหรับ φ(n), τ(n), σ(n) และ μ(n) ลองเปลี่ยนค่า n แล้วดูว่าแต่ละฟังก์ชัน “นับ” หรือ “รวม” อะไร ทีละขั้น</p>
+  <p>สื่อประกอบการติว สอวน. คณิตศาสตร์ ค่าย 1 สำหรับนักเรียน เรียนรู้และทบทวน φ(n), τ(n), σ(n) และ μ(n) ทีละขั้น ตั้งแต่เห็นภาพ ฝึกคำนวณ ไปจนถึงพิสูจน์</p>
   <div class="hrow"><div id="prog" class="num"></div>
   <details id="themes"><summary>โทนสี: <b id="thName"></b></summary><div id="thList"></div></details></div>
 </header>
@@ -226,6 +277,11 @@ a.lk:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
     <div class="ask"><b>ก่อนเริ่ม</b> รู้ความหมายของ ตัวหาร, ห.ร.ม. และ จำนวนเฉพาะสัมพัทธ์ แล้วหรือยัง
       <div class="row"><button data-go="gloss">ยังไม่แน่ใจ ไปหน้าคำศัพท์ก่อน</button><button class="go" data-go="lab">รู้แล้ว เริ่มขั้นที่ 1</button></div></div>
     <div id="flow"></div>
+  </div>
+  <div class="panel">
+    <h2>จุดที่ควรทบทวน</h2>
+    <p class="hint">แอปจดผลจากเกมศึกชิงค่าฟังก์ชัน เกมเก็บจำนวนเฉพาะสัมพัทธ์ และการเติมตาราง แยกตามฟังก์ชัน ข้อมูลเก็บไว้ในเครื่องนี้เท่านั้น</p>
+    <div id="revOut"></div>
   </div>
   <div class="panel">
     <h2>ทางลัด</h2>
@@ -291,6 +347,7 @@ a.lk:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
     <p class="hint">โจทย์ 1 ถึง 32 และแบบฝึกหัดจากเอกสารประกอบการเรียน เลขข้อตรงกับในเอกสาร ลองทำเองก่อน ติดแล้วค่อยเปิดคำใบ้ และเปิดเฉลยเป็นลำดับสุดท้าย</p>
     <div class="row noprint"><button class="sm" data-print="q">พิมพ์เฉพาะโจทย์</button><button class="sm" data-print="sol">พิมพ์พร้อมคำใบ้และเฉลย</button><span class="hint" style="margin:0">พิมพ์ตามหมวดที่เลือกอยู่</span></div>
     <div class="row noprint" id="docF"></div>
+    <p class="num noprint" id="docCount" style="margin:4px 0;font-weight:700"></p>
     <div id="docOut"></div>
   </div>
 </section>
@@ -492,6 +549,13 @@ function explain(fn,n){
   }
   return st;
 }
+function keepFocus(c,fn){const a=document.activeElement;let sel=null,pid=null;
+  if(a&&a!==document.body&&c.contains(a)){const k=Object.keys(a.dataset)[0];
+    if(k)sel='[data-'+k.replace(/[A-Z]/g,m=>'-'+m.toLowerCase())+'="'+a.dataset[k]+'"]';else if(a.id)sel='#'+a.id;
+    const h=a.parentElement&&a.parentElement.closest('[id]');pid=h?h.id:null}
+  const r=fn();
+  if((sel||pid)&&!c.contains(document.activeElement)){const e=(sel&&c.querySelector(sel+':not([disabled])'))||(pid&&document.querySelector('#'+pid+' button:not([disabled])'));if(e)e.focus({preventScroll:true})}
+  return r}
 const stepsHTML=a=>FX('<ol class="steps">'+a.map(s=>`<li>${s}</li>`).join('')+'</ol>');
 
 /* ---------- LAB ---------- */
@@ -503,7 +567,8 @@ $('#nSl').oninput=e=>setN(e.target.value);
 $('#quick').onclick=e=>{if(e.target.dataset.n)setN(e.target.dataset.n)};
 $('#four').onclick=e=>{const b=e.target.closest('button');if(b){S.fn=b.dataset.fn;S.step=0;renderLab()}};
 
-function renderLab(){
+function renderLab(){return keepFocus($('#lab'),renderLab0)}
+function renderLab0(){
   const n=S.n;
   $('#facOut').innerHTML=`${n} = ${facTok(n)}`+(factor(n).length===1&&factor(n)[0][1]===1?' <span class="hint">(จำนวนเฉพาะ)</span>':'');
   $('#four').innerHTML=Object.keys(F).map(k=>`<button data-fn="${k}" class="${S.fn===k?'on':''}" aria-pressed="${S.fn===k}">
@@ -588,8 +653,9 @@ function viewMu(){
 
 /* ---------- MULT ---------- */
 function renderMult(){
-  const m=Math.max(1,Math.min(999,+$('#mA').value||1)),n=Math.max(1,Math.min(999,+$('#mB').value||1)),g=gcd(m,n);
-  let h=`<div class="fac">${m} = ${facTok(m)} &nbsp; ${n} = ${facTok(n)}</div>
+  const m=Math.max(1,Math.min(999,Math.floor(+$('#mA').value)||1)),n=Math.max(1,Math.min(999,Math.floor(+$('#mB').value)||1)),g=gcd(m,n);
+  const oob=[['#mA',m],['#mB',n]].some(([s,v])=>$(s).value!==''&&+$(s).value!==v);
+  let h=(oob?`<p class="note">ช่องนี้รับจำนวนเต็มตั้งแต่ 1 ถึง 999 จึงคำนวณด้วย m = ${m} และ n = ${n}</p>`:'')+`<div class="fac">${m} = ${facTok(m)} &nbsp; ${n} = ${facTok(n)}</div>
   <div class="banner ${g===1?'ok':'no'}">(${m}, ${n}) = ${g} ${g===1?'เป็นจำนวนเฉพาะสัมพัทธ์ ไม่มีจำนวนเฉพาะตัวใดอยู่ทั้งสองฝั่ง':'ไม่เป็นจำนวนเฉพาะสัมพัทธ์ มีตัวประกอบเฉพาะซ้ำกันสองฝั่ง'}</div>
   <div class="scroll"><table><tr><th>f</th><th>f(${m})</th><th>f(${n})</th><th>f(${m})·f(${n})</th><th>f(${m*n})</th><th>เท่ากัน</th></tr>`;
   for(const k in F){const a=F[k](m),b=F[k](n),c=F[k](m*n),eq=a*b===c;
@@ -598,6 +664,7 @@ function renderMult(){
   $('#multOut').innerHTML=h;
 }
 $('#mA').oninput=$('#mB').oninput=renderMult;
+$('#mA').onchange=$('#mB').onchange=e=>{e.target.value=Math.max(1,Math.min(999,Math.floor(+e.target.value)||1));renderMult()};
 $('#mult').addEventListener('click',e=>{const p=e.target.dataset.pair;if(p){[$('#mA').value,$('#mB').value]=p.split(',');renderMult()}});
 
 /* ---------- FILL ---------- */
@@ -625,7 +692,7 @@ function minTau(k,skip=0){for(let n=1;n<5000;n++)if(F.tau(n)===k&&skip--===0)ret
 function makeQ(){
   if(Q.lv===2&&Math.random()<.3){
     const k=[3,4,6,8,9,10,12][rnd(0,6)],ans=minTau(k);
-    return {text:`n ที่น้อยที่สุดซึ่ง τ(n) = ${k}`,ans,choices:shuffle([ans,minTau(k,1),minTau(k,2),minTau(k-1)]),
+    return {fn:'tau',n:ans,text:`n ที่น้อยที่สุดซึ่ง τ(n) = ${k}`,ans,choices:shuffle([ans,minTau(k,1),minTau(k,2),minTau(k-1)]),
       sol:[`ต้องการ (a₁+1)(a₂+1)… = ${k} ลองเขียน ${k} เป็นผลคูณทุกแบบ`,`ให้เลขชี้กำลังที่มากกว่าอยู่กับจำนวนเฉพาะที่เล็กกว่า แล้วเทียบค่าของแต่ละแบบ`,`ค่าน้อยที่สุดคือ ${ans} = ${facPlain(ans)} <span class="result">${ans}</span>`]};
   }
   const fns=Q.lv===0?['phi','tau']:['phi','tau','sigma','mu'],fn=fns[rnd(0,fns.length-1)],max=[30,120,600][Q.lv];
@@ -634,17 +701,18 @@ function makeQ(){
   if(fn==='mu')choices=[-1,0,1];
   else{const pool=[...new Set([F.phi(n),F.tau(n),F.sigma(n),n-1,n+1,ans+1,ans-1,ans+2,ans-2,ans*2,ans+4])].filter(v=>v>0&&v!==ans);
     choices=shuffle([ans,...shuffle(pool).slice(0,3)])}
-  return {text:`${SYM[fn]}(${n}) = ?`,ans,choices,sol:explain(fn,n)};
+  return {fn,n,text:`${SYM[fn]}(${n}) = ?`,ans,choices,sol:explain(fn,n)};
 }
 function nextQ(){
   Q.cur=makeQ();Q.paused=false;$('#qzFb').innerHTML='';$('#qzQ').textContent=Q.cur.text;
   $('#qzCh').innerHTML=Q.cur.choices.map(c=>`<button data-v="${c}">${show(c)}</button>`).join('');
+  if(document.activeElement===document.body||$('#qzPlay').contains(document.activeElement)){const e=$('#qzCh button');if(e)e.focus({preventScroll:true})}
 }
 function hud(){$('#qzT').textContent=Q.t;$('#qzS').textContent=Q.score;$('#qzC').textContent='×'+Math.min(5,Q.combo+1);$('#qzBar').style.width=(Q.t/75*100)+'%'}
-$('#qzGo').onclick=()=>{Q.t=75;Q.score=0;Q.combo=0;$('#qzStart').hidden=true;$('#qzPlay').hidden=false;nextQ();hud();
-  clearInterval(Q.timer);Q.timer=setInterval(()=>{if(Q.paused)return;Q.t--;hud();if(Q.t<=0)endQ()},1000)};
+$('#qzGo').onclick=()=>{Q.t=75;Q.score=0;Q.combo=0;$('#qzStart').hidden=true;$('#qzPlay').hidden=false;nextQ();hud();{const e=$('#qzCh button');if(e)e.focus({preventScroll:true})}
+  clearInterval(Q.timer);Q.timer=setInterval(()=>{if(Q.paused||Q.away||document.hidden)return;Q.t--;hud();if(Q.t<=0)endQ()},1000)};
 $('#qzCh').onclick=e=>{const b=e.target.closest('button');if(!b||Q.paused)return;Q.paused=true;
-  const v=+b.dataset.v,ok=v===Q.cur.ans;
+  const v=+b.dataset.v,ok=v===Q.cur.ans;rec(Q.cur.fn,ok,Q.cur.n,Q.cur.text);
   $$('#qzCh button').forEach(x=>{x.disabled=true;if(+x.dataset.v===Q.cur.ans)x.classList.add('right')});
   if(ok){Q.score+=10*Math.min(5,Q.combo+1);Q.combo++;hud();setTimeout(()=>{if(Q.t>0)nextQ()},550)}
   else{b.classList.add('wrongc');Q.combo=0;hud();
@@ -660,7 +728,8 @@ function endQ(){clearInterval(Q.timer);Q.paused=true;if(Q.score>=100)award('qz'+
 /* ---------- COPRIME GAME ---------- */
 const C={n:12,sel:new Set(),done:false,score:0};
 function cpNew(){do{C.n=rnd(8,36)}while(factor(C.n).length===1&&factor(C.n)[0][1]===1);C.sel=new Set();C.done=false;$('#cpFb').innerHTML='';cpDraw()}
-function cpDraw(){
+function cpDraw(){return keepFocus($('#cpCells'),cpDraw0)}
+function cpDraw0(){
   $('#cpQ').innerHTML=`n = ${C.n}`;
   let h='';for(let m=1;m<=C.n;m++){const co=gcd(m,C.n)===1,s=C.sel.has(m);
     const cls=!C.done?(s?'sel':''):(s&&co?'keep':s&&!co?'bad':!s&&co?'miss':'');
@@ -670,9 +739,10 @@ function cpDraw(){
 $('#cpCells').onclick=e=>{const m=+e.target.dataset.m;if(!m||C.done)return;C.sel.has(m)?C.sel.delete(m):C.sel.add(m);cpDraw()};
 $('#cpCheck').onclick=()=>{C.done=true;let miss=0,bad=0;
   for(let m=1;m<=C.n;m++){const co=gcd(m,C.n)===1;if(co&&!C.sel.has(m))miss++;if(!co&&C.sel.has(m))bad++}
-  const ok=!miss&&!bad;if(ok){C.score++;$('#cpScore').textContent=C.score;if(C.score>=3)award('cp')}
+  const ok=!miss&&!bad;rec('phi',ok,C.n,`φ(${C.n}) = ?`);if(ok){C.score++;$('#cpScore').textContent=C.score;if(C.score>=3)award('cp')}
   cpDraw();
   $('#cpFb').innerHTML=`<div class="banner ${ok?'ok':'no'}">${ok?`ถูกครบ เก็บได้ ${C.sel.size} จำนวน ตรงกับ φ(${C.n}) = ${F.phi(C.n)}`:`เลือกเกินมา ${bad} ตัว (สีแดง ✗) และตกหล่น ${miss} ตัว (เส้นประ) คำตอบคือ φ(${C.n}) = ${F.phi(C.n)}`}</div>${stepsHTML(explain('phi',C.n))}`;
+  $('#cpNext').focus({preventScroll:true});
 };
 $('#cpHint').onclick=()=>{if(!C.done)$('#cpFb').innerHTML=`<div class="banner ok">${C.n} = ${facPlain(C.n)} ดังนั้นจำนวนที่ต้องเว้นคือพหุคูณของ ${factor(C.n).map(x=>x[0]).join(' และ ')}</div>`};
 $('#cpNext').onclick=cpNew;
@@ -754,7 +824,8 @@ const PROOFS=[
 ];
 const P={i:0,mode:'reveal',shown:1,order:[],checked:false,n:36};
 function pfShuffle(){const k=PROOFS[P.i].steps.length;do{P.order=shuffle([...Array(k).keys()])}while(P.order.every((v,i)=>v===i));P.checked=false}
-function renderProof(){
+function renderProof(){return keepFocus($('#proofOut'),renderProof0)}
+function renderProof0(){
   const p=PROOFS[P.i],k=p.steps.length;
   let h=`<div class="row">${PROOFS.map((x,i)=>`<button class="sm ${i===P.i?'on':''}" data-pi="${i}">${x.t}</button>`).join('')}</div>
   <div class="claim"><b>จงพิสูจน์ว่า</b> ${p.claim}</div>
@@ -787,8 +858,8 @@ $('#proofOut').addEventListener('click',e=>{
   else if(d.pa==='again')P.shown=1;
   else if(d.pa==='check')P.checked=true;
   else if(d.pa==='shuf')pfShuffle();
-  else if(d.up!==undefined){const i=+d.up;[P.order[i-1],P.order[i]]=[P.order[i],P.order[i-1]];P.checked=false}
-  else if(d.dn!==undefined){const i=+d.dn;[P.order[i+1],P.order[i]]=[P.order[i],P.order[i+1]];P.checked=false}
+  else if(d.up!==undefined){const i=+d.up;[P.order[i-1],P.order[i]]=[P.order[i],P.order[i-1]];P.checked=false;renderProof();const e=$('#proofOut [data-up="'+(i-1)+'"]:not([disabled])')||$('#proofOut [data-dn="'+(i-1)+'"]');if(e)e.focus({preventScroll:true});return}
+  else if(d.dn!==undefined){const i=+d.dn;[P.order[i+1],P.order[i]]=[P.order[i],P.order[i+1]];P.checked=false;renderProof();const e=$('#proofOut [data-dn="'+(i+1)+'"]:not([disabled])')||$('#proofOut [data-up="'+(i+1)+'"]');if(e)e.focus({preventScroll:true});return}
   else hit=false;
   if(hit)renderProof();
 });
@@ -862,6 +933,10 @@ function setTheme(k){if(!THEMES.some(x=>x[0]===k))k='auto';
   $$('#themes button').forEach(b=>{b.classList.toggle('on',b.dataset.th===k);b.setAttribute('aria-pressed',b.dataset.th===k)});$('#thName').textContent=THEMES.find(x=>x[0]===k)[1]}
 $('#thList').onclick=e=>{const b=e.target.closest('button');if(b){setTheme(b.dataset.th);$('#themes').open=false}};
 document.addEventListener('click',e=>{if(!e.target.closest('#themes'))$('#themes').open=false});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#themes').open){$('#themes').open=false;$('#themes summary').focus()}});
+$('#themes').addEventListener('toggle',()=>{const l=$('#thList');l.style.left='';l.style.right='';if(!$('#themes').open)return;
+  let r=l.getBoundingClientRect();if(r.left<8){l.style.left='0';l.style.right='auto';r=l.getBoundingClientRect();
+    if(r.right>innerWidth-8)l.style.left=Math.round(innerWidth-8-r.right)+'px'}});
 let savedTheme='auto';try{savedTheme=localStorage.getItem('ntf-theme')||'auto'}catch(e){}
 setTheme(savedTheme);
 
@@ -922,14 +997,16 @@ function invSteps(fn,v){
   }
   return st;
 }
-function renderInv(){
+function renderInv(){return keepFocus($('#inv'),renderInv0)}
+function renderInv0(){
   $$('#invFn button').forEach(b=>b.classList.toggle('on',b.dataset.ifn===IV.fn));
   $('#invQ').innerHTML='ลองค่าเหล่านี้ '+IQ[IV.fn].map(v=>`<button class="sm" data-iv="${v}">${v}</button>`).join('');
-  $('#invOut').innerHTML=`<div class="claim"><b>โจทย์</b> จงหาจำนวนเต็มบวก n ทั้งหมดซึ่ง ${SYM[IV.fn]}(n) = ${IV.v}</div>
+  $('#invOut').innerHTML=(IV.oob?`<p class="note">ช่องนี้รับจำนวนเต็มตั้งแต่ 1 ถึง 100 จึงใช้ v = ${IV.v}</p>`:'')+`<div class="claim"><b>โจทย์</b> จงหาจำนวนเต็มบวก n ทั้งหมดซึ่ง ${SYM[IV.fn]}(n) = ${IV.v}</div>
     <details><summary><b>เปิดดูขั้นตอนและคำตอบ</b> (ลองทำเองก่อน)</summary>${stepsHTML(invSteps(IV.fn,IV.v))}</details>`;
 }
-$('#inv').addEventListener('click',e=>{const d=e.target.dataset;if(d.ifn){IV.fn=d.ifn;renderInv()}else if(d.iv){IV.v=+d.iv;$('#invV').value=IV.v;renderInv()}});
-$('#invV').oninput=e=>{if(e.target.value!==''){IV.v=Math.max(1,Math.min(100,Math.floor(+e.target.value)||1));renderInv()}};
+$('#inv').addEventListener('click',e=>{const d=e.target.dataset;if(d.ifn){IV.fn=d.ifn;renderInv()}else if(d.iv){IV.v=+d.iv;IV.oob=false;$('#invV').value=IV.v;renderInv()}});
+$('#invV').oninput=e=>{if(e.target.value!==''){IV.v=Math.max(1,Math.min(100,Math.floor(+e.target.value)||1));IV.oob=+e.target.value!==IV.v;renderInv()}};
+$('#invV').onchange=e=>{e.target.value=IV.v;IV.oob=false;renderInv()};
 
 /* ---------- SUMMARY + GRAPH ---------- */
 $('#sumCards').innerHTML=[
@@ -945,7 +1022,8 @@ const GN={phi:'จุดสีแดงคือจำนวนเฉพาะ �
  sigma:'จำนวนเฉพาะเรียงเป็นเส้น σ(p) = p + 1 อยู่ล่างสุด จุดที่สูงกว่าเส้น 2n คือจำนวนมากเกิน',
  mu:'ค่ามีเพียง −1, 0, 1 จำนวนเฉพาะทุกตัวอยู่ที่ −1 และทุกจำนวนที่ 4 หารลงตัวอยู่ที่ 0'};
 let grFn='phi';
-function renderGraph(){
+function renderGraph(){return keepFocus($('#sum'),renderGraph0)}
+function renderGraph0(){
   $('#grFn').innerHTML=Object.keys(F).map(k=>`<button class="sm ${k===grFn?'on':''}" data-g="${k}">${SYM[k]}(n)</button>`).join('');
   const N=200,W=720,H=300,L=44,B=26,vals=Array.from({length:N},(_,i)=>F[grFn](i+1)),mx=Math.max(...vals),mn=Math.min(0,...vals);
   const x=n=>L+n/N*(W-L-10),y=v=>H-B-(v-mn)/(mx-mn)*(H-B-12);
@@ -978,7 +1056,8 @@ $('#merT').innerHTML='<tr><th>p</th><th>2<sup>p</sup> − 1</th><th>เป็น
 /* ---------- VERSUS ---------- */
 const TEAM=['ทีมแดง','ทีมน้ำเงิน'],V={st:'idle',lv:1,turn:0,sc:[0,0],k:0,total:10,cur:null,pick:null};
 function makeQL(lv){const s=Q.lv;Q.lv=lv;const q=makeQ();Q.lv=s;return q}
-function vsDraw(){
+function vsDraw(){return keepFocus($('#vsOut'),vsDraw0)}
+function vsDraw0(){
   let h='';
   if(V.st==='idle'||V.st==='end'){
     if(V.st==='end')h+=`<div class="banner ok">${V.sc[0]===V.sc[1]?`เสมอกัน ${V.sc[0]} ต่อ ${V.sc[1]}`:`${TEAM[V.sc[0]>V.sc[1]?0:1]} ชนะ ${Math.max(...V.sc)} ต่อ ${Math.min(...V.sc)}`}</div>`;
@@ -1047,7 +1126,10 @@ const DOCQ=[
 ];
 const DG=[['all','ทั้งหมด'],['phi','φ (โจทย์ 1–11)'],['ts','τ และ σ (โจทย์ 12–27)'],['mu','μ (โจทย์ 28–32)'],['ex','แบบฝึกหัด']];
 let docG='all';
-function renderDoc(){
+let DONE=new Set();try{DONE=new Set(JSON.parse(localStorage.getItem('ntf-done')||'[]'))}catch(e){}
+function docCountUp(){$('#docCount').textContent=`ทำแล้ว ${DOCQ.filter(x=>DONE.has(x.no)).length} จาก ${DOCQ.length} ข้อ`}
+function renderDoc(){return keepFocus($('#doc'),renderDoc0)}
+function renderDoc0(){
   $('#docF').innerHTML=DG.map(([k,n])=>`<button class="sm ${k===docG?'on':''}" data-dg="${k}">${n}</button>`).join('');
   $('#docOut').innerHTML=DOCQ.filter(x=>docG==='all'||x.g===docG).map(x=>{
     let ans;
@@ -1055,11 +1137,51 @@ function renderDoc(){
       ans='<div class="scroll"><table><tr><th>ข้อ</th><th>โจทย์</th><th style="text-align:left">คำตอบ</th></tr>'+it.map(([a,b],i)=>`<tr><th>${x.no.slice(-1)}.${i+1}</th><td>${a}</td><td style="text-align:left">${b}</td></tr>`).join('')+'</table></div>';
     }else ans=stepsHTML(typeof x.sol==='function'?x.sol():x.sol);
     const subs=x.items?(typeof x.items==='function'?x.items():x.items).map((it,i)=>`<span class="chip">${x.no.slice(-1)}.${i+1} &nbsp; ${it[0]}</span>`).join(''):'';
-    return `<div class="pq"><div><b class="num">${x.no}</b> <span class="chip">${x.ty}</span></div><p>${x.q}</p>${subs?`<div>${subs}</div>`:''}
+    return `<div class="pq ${DONE.has(x.no)?'done':''}"><div><label class="dn noprint"><input type="checkbox" data-done="${x.no}" ${DONE.has(x.no)?'checked':''}> ทำแล้ว</label><b class="num">${x.no}</b> <span class="chip">${x.ty}</span></div><p>${x.q}</p>${subs?`<div>${subs}</div>`:''}
       <details><summary>คำใบ้</summary><p>${x.hint}</p></details><details><summary>เฉลย</summary>${ans}</details></div>`}).join('');
 }
 $('#docF').onclick=e=>{if(e.target.dataset.dg){docG=e.target.dataset.dg;renderDoc()}};
-renderDoc();
+renderDoc();docCountUp();
+
+/* ---------- REVIEW (S1) ---------- */
+const RV0=()=>({s:{phi:[0,0],tau:[0,0],sigma:[0,0],mu:[0,0]},w:[]});
+let RV=RV0();try{const x=JSON.parse(localStorage.getItem('ntf-rev'));if(x&&x.s&&Array.isArray(x.w)&&Object.keys(F).every(k=>Array.isArray(x.s[k])))RV=x}catch(e){}
+function rec(fn,ok,n,text){if(!RV.s[fn])return;RV.s[fn][ok?0:1]++;
+  const i=RV.w.findIndex(x=>x.fn===fn&&x.n===n&&x.t===text);if(i>=0)RV.w.splice(i,1);
+  if(!ok){RV.w.unshift({fn,n,t:text});RV.w=RV.w.slice(0,8)}
+  try{localStorage.setItem('ntf-rev',JSON.stringify(RV))}catch(e){}renderRev()}
+const DOCG={phi:'phi',tau:'ts',sigma:'ts',mu:'mu'};
+function renderRev(){
+  const need=Object.keys(F).filter(k=>{const [o,b]=RV.s[k];return o+b>=3&&o/(o+b)<.7}),any=Object.values(RV.s).some(x=>x[0]+x[1]>=3);
+  const rows=Object.keys(F).map(k=>{const [ok,bad]=RV.s[k],tot=ok+bad,acc=tot?Math.round(ok/tot*100):0;
+    const st=tot<3?'ข้อมูลยังน้อย':acc<70?'ควรทบทวน ✗':'ไปได้ดี ✓';
+    return `<div class="sumcard"><h3>${SYM[k]}(n) <span class="chip ${tot>=3&&acc<70?'sq':''}" style="font-size:.85rem">${st}</span></h3>
+      <div>${tot?`ตอบ ${tot} ครั้ง ถูก ${ok} ผิด ${bad}`:'ยังไม่เคยตอบ'}</div>
+      ${tot?`<div class="bar" title="ถูก ${acc}%"><i style="width:${acc}%"></i></div>`:''}
+      <div class="row"><button class="sm" data-rvl="${k}">ดูวิธีคิด ${SYM[k]}</button><button class="sm" data-rvd="${k}">ทำโจทย์หมวดนี้</button></div></div>`}).join('');
+  $('#revOut').innerHTML=`<div class="banner ${need.length?'no':'ok'}">${need.length?'ควรทบทวนก่อน: '+need.map(k=>SYM[k]+'(n) '+NAME[k]).join(', '):any?'ยังไม่มีเรื่องที่ต้องทบทวนเป็นพิเศษ ทำได้ดีแล้ว':'ยังไม่มีข้อมูลพอ ลองเล่นเกมหรือเติมตารางก่อน แล้วกลับมาดูที่นี่'}</div>
+    <div class="sumgrid">${rows}</div>`
+    +(RV.w.length?`<h2 style="margin-top:14px">ข้อที่ตอบผิดล่าสุด</h2><p class="hint">กดเพื่อเปิดวิธีคิดของข้อนั้น เมื่อตอบข้อเดิมถูก ข้อนั้นจะหายจากรายการ</p><div class="row">${RV.w.map((x,i)=>`<button class="sm" data-rvw="${i}">${x.t}</button>`).join('')}</div>`:'')
+    +`<div class="row"><button class="sm" id="revReset">ล้างสถิติ</button></div>`;
+}
+$('#revOut').onclick=e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(b.id==='revReset'){RV=RV0();try{localStorage.removeItem('ntf-rev')}catch(err){}renderRev()}
+  else if(d.rvl){S.fn=d.rvl;S.step=0;renderLab();goTab('lab',true)}
+  else if(d.rvd){docG=DOCG[d.rvd];renderDoc();goTab('doc',true)}
+  else if(d.rvw){const x=RV.w[+d.rvw];S.fn=x.fn;setN(x.n);goTab('lab',true)}};
+$('#fillT').addEventListener('change',e=>{const i=e.target;if(i.dataset.k&&i.value.trim()!=='')rec(i.dataset.k,i.classList.contains('good'),+i.dataset.n,`${SYM[i.dataset.k]}(${i.dataset.n}) = ?`)});
+renderRev();
+
+/* ---------- DONE TICKS (S3) ---------- */
+$('#docOut').addEventListener('change',e=>{const k=e.target.dataset.done;if(!k)return;
+  e.target.checked?DONE.add(k):DONE.delete(k);try{localStorage.setItem('ntf-done',JSON.stringify([...DONE]))}catch(err){}
+  e.target.closest('.pq').classList.toggle('done',e.target.checked);docCountUp()});
+
+/* ---------- STEP NAV (S2) + S5 ---------- */
+$('#game').append($('#missList').closest('.panel'));
+const ORDER=[['lab','สำรวจทีละฟังก์ชัน'],['mult','ฟังก์ชันการคูณ'],['fill','เติมตาราง'],['sum','สรุปสูตร'],['doc','โจทย์ท้ายบท'],['inv','โจทย์ย้อนกลับ'],['proof','ฝึกพิสูจน์'],['game','เกม'],['ext','ต่อยอด']];
+ORDER.forEach(([k],i)=>{const pv=ORDER[i-1],nx=ORDER[i+1];
+  $('#'+k).insertAdjacentHTML('beforeend',`<div class="stepnav noprint"><span class="num">ขั้นที่ ${i+1} จาก ${ORDER.length}</span><span class="row" style="margin:0">${pv?`<button class="sm" data-go="${pv[0]}">← ${pv[1]}</button>`:'<button class="sm" data-go="home">← เริ่มต้น</button>'}${nx?`<button class="go" data-go="${nx[0]}">ขั้นถัดไป: ${nx[1]} →</button>`:'<button class="go" data-go="home">ครบทุกขั้นแล้ว กลับหน้าเริ่มต้น</button>'}</span></div>`)});
 
 /* ---------- NAV ---------- */
 const TABS=['home','lab','mult','fill','sum','doc','inv','proof','game','ext','gloss','refs','about'];
@@ -1076,12 +1198,12 @@ function goTab(t,scroll){if(!TABS.includes(t))return;
   $$('#nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.grp===g[0]));
   const sn=$('#subnav');sn.hidden=g[2].length<2;
   sn.innerHTML=g[2].map(([k,n])=>`<button class="sm ${k===t?'on':''}" data-tab="${k}" aria-pressed="${k===t}">${n}</button>`).join('');
-  TABS.forEach(id=>$('#'+id).hidden=id!==t);if(scroll)$('#nav').scrollIntoView({block:'start'})}
+  document.body.classList.toggle('inner',t!=='home');Q.away=t!=='game';TABS.forEach(id=>$('#'+id).hidden=id!==t);if(scroll)$('#nav').scrollIntoView({block:'start'})}
 $('#nav').onclick=e=>{const g=e.target.dataset.grp;if(g)goTab(lastIn[g]||GROUPS.find(x=>x[0]===g)[2][0][0])};
 $('#subnav').onclick=e=>{if(e.target.dataset.tab)goTab(e.target.dataset.tab)};
 goTab('home');
 document.addEventListener('click',e=>{const p=e.target.dataset&&e.target.dataset.print;if(!p)return;
-  if(p==='sol')$$('#doc details').forEach(d=>d.open=true);if(p==='q')$$('#doc details').forEach(d=>d.open=false);
+  document.body.classList.toggle('pq-only',p==='q');if(p==='sol')$$('#doc details').forEach(d=>d.open=true);if(p==='q')$$('#doc details').forEach(d=>d.open=false);
   try{window.print()}catch(err){showToast('เบราว์เซอร์นี้ไม่ยอมให้สั่งพิมพ์จากหน้านี้ ลองเปิดจากลิงก์ GitHub')}});
 const FLOW=[
  ['เข้าใจ',[['lab','สำรวจทีละฟังก์ชัน','เปลี่ยนค่า n แล้วดูว่า φ, τ, σ, μ นับหรือรวมอะไร ลองกดตัดพหุคูณในหน้า φ และดูตารางตัวหารในหน้า τ กับ σ'],
@@ -1094,7 +1216,7 @@ const FLOW=[
  ['ทบทวนและไปต่อ',[['game','เกม','จับเวลาแข่งกับตัวเอง สะสมดาว หรือแข่งสองทีมในห้อง'],
                     ['ext','ต่อยอด','ทฤษฎีบทออยเลอร์ สูตรผกผันเมอบิอุส และจำนวนสมบูรณ์ สำหรับคนที่อยากไปไกลกว่าบทเรียน']]]];
 let fk=0;$('#flow').innerHTML=FLOW.map(([ph,st])=>`<div class="phase"><div class="phl">${ph}</div>${st.map(([k,n,d])=>`<div class="node"><span class="nb">${++fk}</span><div class="nt"><b>${n}</b><br>${d}</div><button class="sm" data-go="${k}">ไปหน้านี้</button></div>`).join('<div class="arr">↓</div>')}</div>`).join('<div class="arr">↓</div>');
-$('#home').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)goTab(b.dataset.go,true)});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){goTab(b.dataset.go,true);const s=$('#subnav .on')||$('#nav [aria-selected="true"]');if(s)s.focus({preventScroll:true})}});
 
 renderLab();renderMult();buildFill();showBest();cpNew();
 glossify(wrapEl);obs.observe(wrapEl,{childList:true,subtree:true});
