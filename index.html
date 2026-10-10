@@ -266,6 +266,9 @@ button:active:not(:disabled),a.lk:active{transform:translateY(1px);filter:bright
 .qrurl{font-weight:700;font-size:clamp(1rem,3.2vw,1.9rem);overflow-wrap:anywhere;margin:8px 0}
 .qrbox:fullscreen{width:100vw;height:100vh;border:0;border-radius:0;display:flex;align-items:center;justify-content:center}.qrbox:fullscreen svg{width:auto;height:96vh;max-width:96vw}
 @media print{.noprint{display:none!important}}
+.whw{position:relative;width:min(100%,78vh,560px);margin:10px auto}.whw canvas{display:block;width:100%;height:auto}
+.whp{position:absolute;left:50%;top:-4px;transform:translateX(-50%);width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:28px solid var(--ink);z-index:1}
+.whout{font-weight:700;font-size:clamp(1.3rem,4.5vw,2.2rem);margin:10px 0;min-height:1.6em}
 </style>
 </head>
 <body>
@@ -465,6 +468,18 @@ button:active:not(:disabled),a.lk:active{transform:translateY(1px);filter:bright
   </div>
 </section>
 <!-- REFS -->
+<section id="wheel" hidden>
+  <div class="panel" style="text-align:center">
+    <h2>วงล้อสุ่มชื่อ</h2>
+    <p class="hint">กดหมุนเพื่อสุ่มคนตอบ ชื่อแสดงแบบปิดนามสกุลไว้ คนที่ถูกสุ่มแล้วจะออกจากวงล้อจนกว่าจะกดเริ่มใหม่</p>
+    <div class="whw"><div class="whp" aria-hidden="true"></div><canvas id="whC" width="1040" height="1040" role="img" aria-label="วงล้อสุ่มชื่อ"></canvas></div>
+    <p id="whOut" class="whout" aria-live="polite">พร้อมหมุน</p>
+    <div class="row" style="justify-content:center"><button class="go" id="whSpin">หมุนวงล้อ</button><button id="whReset">เริ่มใหม่ทั้งหมด</button></div>
+    <label style="display:block;margin-top:10px"><input type="checkbox" id="whKeep"> ไม่ต้องเอาชื่อออกหลังสุ่ม</label>
+    <p class="hint" id="whLeft"></p>
+  </div>
+</section>
+
 <section id="refs" hidden>
   <div class="panel">
     <h2>เจ้าของเอกสารต้นฉบับ</h2>
@@ -804,7 +819,7 @@ const PROOFS=[
  {t:'σ(n) = n + 1',claim:'σ(n) = n + 1 ก็ต่อเมื่อ n เป็นจำนวนเฉพาะ',
   idea:'1 และ n เป็นตัวหารของ n เสมอ และรวมกันได้ n + 1 พอดี จึงต้องไม่มีตัวหารอื่นเหลืออีก',
   test:n=>`σ(${n}) = ${F.sigma(n)} ส่วน n + 1 = ${n+1} ${F.sigma(n)===n+1?'เท่ากัน':'ไม่เท่ากัน'} และ ${n} ${isPrime(n)?'เป็น':'ไม่เป็น'}จำนวนเฉพาะ`,
-  steps:['(⇒) สมมติ σ(n) = n + 1 จะได้ n ≠ 1 เพราะ σ(1) = 1 ≠ 2','เมื่อ n &gt; 1 จำนวน 1 และ n เป็นตัวหารที่ต่างกัน ซึ่งรวมกันได้ n + 1 แล้ว','ถ้ามีตัวหาร d อื่นซึ่ง 1 &lt; d &lt; n จะได้ σ(n) ≥ 1 + d + n &gt; n + 1 ขัดแย้งกับสมมติฐาน','ดังนั้น n ไม่มีตัวหารบวกอื่นนอกจาก 1 และ n นั่นคือ n เป็นจำนวนเฉพาะ','(⇐) สมมติ n เป็นจำนวนเฉพาะ ตัวหารบวกของ n มีเพียง 1 และ n จึงได้ σ(n) = n + 1','จากทั้งสองขา จะได้ σ(n) = n + 1 ก็ต่อเมื่อ n เป็นจำนวนเฉพาะ']},
+  steps:['(⇒) สมมติ σ(n) = n + 1 จะได้ n ≠ 1 เพราะ σ(1) = 1 ≠ 2','เนื่องจาก 1 | n และ n | n โดย 1 ≠ n ทั้งสองจึงเป็นตัวหารบวกที่ต่างกัน ดังนั้น σ(n) ≥ 1 + n','สมมติว่า n มีตัวหารบวก d อื่นซึ่ง 1 &lt; d &lt; n จะได้ σ(n) ≥ 1 + d + n &gt; n + 1 ขัดแย้งกับสมมติฐาน σ(n) = n + 1','ดังนั้นตัวหารบวกของ n มีเพียง 1 และ n เท่านั้น นั่นคือ n เป็นจำนวนเฉพาะ','(⇐) สมมติ n เป็นจำนวนเฉพาะ','จากนิยามของจำนวนเฉพาะ ตัวหารบวกของ n มีเพียง 1 และ n','ดังนั้น σ(n) = 1 + n','จากทั้งสองขา จะได้ σ(n) = n + 1 ก็ต่อเมื่อ n เป็นจำนวนเฉพาะ']},
  {t:'φ(pᵏ)',claim:'ถ้า p เป็นจำนวนเฉพาะ และ k เป็นจำนวนเต็มบวก แล้ว φ(p<sup>k</sup>) = p<sup>k</sup> − p<sup>k−1</sup>',
   idea:'นับส่วนที่ “ไม่ใช่” แทน จำนวนที่ไม่เป็นจำนวนเฉพาะสัมพัทธ์กับ p<sup>k</sup> คือพหุคูณของ p เท่านั้น',
   test:n=>{const f=factor(n);return f.length===1?`${n} = ${pw(f[0][0],f[0][1])} พหุคูณของ ${f[0][0]} ที่ไม่เกิน ${n} มี ${n/f[0][0]} จำนวน จึงได้ φ(${n}) = ${n} − ${n/f[0][0]} = ${F.phi(n)}`:`${n} ไม่ใช่กำลังของจำนวนเฉพาะ ลองใส่ 8, 27, 49 หรือ 125`},
@@ -1144,7 +1159,7 @@ const DOCQ=[
  {g:'ts',no:'โจทย์ 21',ty:'คำนวณ',q:`จงหาผลคูณของตัวหารบวกทั้งหมดที่เป็นตัวประกอบของ ${U(420,4)}`,hint:`ผลคูณของตัวหารบวกทั้งหมดของ n เท่ากับ n ยกกำลัง ${fr('τ(n)',2)}`,sol:[`จากสูตรผลคูณของตัวหาร: ผลคูณของตัวหารบวกทั้งหมดของ N เท่ากับ N ยกกำลัง ${fr('τ(N)',2)} (ดูหน้าสรุปสูตร และบทพิสูจน์ในหน้าฝึกพิสูจน์ ข้อ “ผลคูณตัวหาร”)`,`420 = ${U(2,2)} × 3 × 5 × 7 จึงได้ ${U(420,4)} = ${U(2,8)} × ${U(3,4)} × ${U(5,4)} × ${U(7,4)}`,`τ(${U(420,4)}) = 9 × 5 × 5 × 5 = 1125`,`ผลคูณของตัวหาร = (${U(420,4)}) ยกกำลัง ${fr(1125,2)} = <span class="result">${U(420,2250)}</span>`]},
  {g:'ts',no:'โจทย์ 22',ty:'คำนวณ',q:'จงหาจำนวนที่น้อยที่สุด ที่มี 2353 เป็นตัวประกอบ และมีจำนวนตัวหารบวกทั้งหมด 2353 ตัว',hint:'2353 = 13 × 181 ซึ่งเป็นจำนวนเฉพาะทั้งคู่',sol:['2353 = 13 × 181 โดย 13 และ 181 เป็นจำนวนเฉพาะ',`τ(n) = 13 × 181 จึงได้รูปแบบของ n เพียงสองแบบ คือ ${U('p',2352)} หรือ ${U('p',12)}${U('q',180)}`,`n ต้องหารด้วย 13 และ 181 ลงตัว จึงมีตัวประกอบเฉพาะอย่างน้อยสองตัว ต้องเป็นแบบ ${U('p',12)}${U('q',180)} โดย {p, q} = {13, 181}`,`ให้เลขชี้กำลังมากอยู่กับจำนวนเฉพาะตัวเล็ก ได้ <span class="result">n = ${U(13,180)} × ${U(181,12)}</span>`]},
  {g:'ts',no:'โจทย์ 23',ty:'คำนวณ',q:'จงหาจำนวนเต็มบวก n ที่มีตัวหารบวกทั้งหมด 8 จำนวน และมีผลคูณของตัวหารนั้นเท่ากับ 331776',hint:`ผลคูณของตัวหาร = n ยกกำลัง ${fr('τ(n)',2)} = ${U('n',4)}`,sol:[`จากสูตรผลคูณของตัวหาร: ผลคูณของตัวหารบวกทั้งหมดของ n เท่ากับ n ยกกำลัง ${fr('τ(n)',2)} (ดูหน้าสรุปสูตร และบทพิสูจน์ในหน้าฝึกพิสูจน์ ข้อ “ผลคูณตัวหาร”)`,`แทน τ(n) = 8 จะได้ผลคูณเท่ากับ n ยกกำลัง ${fr(8,2)} = ${U('n',4)}`,`${U('n',4)} = 331776 = ${U(576,2)} = ${U(24,4)} และ n เป็นจำนวนเต็มบวก จึงได้ n = 24`,`ตรวจสอบ: 24 = ${U(2,3)} × 3 มี τ(24) = 4 × 2 = 8 จริง คำตอบคือ <span class="result">n = 24</span>`]},
- {g:'ts',no:'โจทย์ 24',ty:'พิสูจน์',q:'ให้ p เป็นจำนวนเฉพาะ จงแสดงว่า<br>(1) σ(p!) = (p + 1)σ((p − 1)!)<br>(2) τ(p!) = 2τ((p − 1)!)<br>(3) φ(p!) = (p − 1)φ((p − 1)!)',hint:'p! = p·(p − 1)! และ p กับ (p − 1)! เป็นจำนวนเฉพาะสัมพัทธ์กัน',sol:['ตัวคูณทุกตัวของ (p − 1)! น้อยกว่า p และ p เป็นจำนวนเฉพาะ จึงได้ (p, (p − 1)!) = 1','p! = p·(p − 1)! และ σ, τ, φ เป็นฟังก์ชันการคูณ จึงได้ f(p!) = f(p)·f((p − 1)!) สำหรับ f ทั้งสามตัว','แทนค่า σ(p) = p + 1, τ(p) = 2 และ φ(p) = p − 1 จะได้ทั้งสามข้อตามต้องการ']},
+ {g:'ts',no:'โจทย์ 24',ty:'พิสูจน์',q:'ให้ p เป็นจำนวนเฉพาะ จงแสดงว่า<br>(1) σ(p!) = (p + 1)σ((p − 1)!)<br>(2) τ(p!) = 2τ((p − 1)!)<br>(3) φ(p!) = (p − 1)φ((p − 1)!)',hint:'p! = p·(p − 1)! และ p กับ (p − 1)! เป็นจำนวนเฉพาะสัมพัทธ์กัน',sol:['ขั้นแรก แสดงว่า (p, (p − 1)!) = 1 เพราะสมบัติฟังก์ชันการคูณใช้ได้เฉพาะเมื่อสองจำนวนเป็นจำนวนเฉพาะสัมพัทธ์กัน','p เป็นจำนวนเฉพาะ ตัวหารบวกของ p มีเพียง 1 และ p ดังนั้น (p, (p − 1)!) เป็นได้แค่ 1 หรือ p','สมมติว่าเป็น p จะได้ p | 1·2·3⋯(p − 1) และเพราะ p เป็นจำนวนเฉพาะ จึงมี k ซึ่ง 1 ≤ k ≤ p − 1 ที่ p | k','แต่ 0 &lt; k &lt; p จึงเป็นไปไม่ได้ เกิดข้อขัดแย้ง ดังนั้น (p, (p − 1)!) = 1','เนื่องจาก p! = p·(p − 1)! และ σ, τ, φ เป็นฟังก์ชันการคูณ จึงแยกได้ดังนี้','(1) σ(p!) = σ(p)·σ((p − 1)!) = (p + 1)σ((p − 1)!) เพราะ σ(p) = 1 + p','(2) τ(p!) = τ(p)·τ((p − 1)!) = 2τ((p − 1)!) เพราะ τ(p) = 2','(3) φ(p!) = φ(p)·φ((p − 1)!) = (p − 1)φ((p − 1)!) เพราะ φ(p) = p − 1','ข้อสังเกต ถ้า p ไม่เป็นจำนวนเฉพาะจะแยกแบบนี้ไม่ได้ เช่น (4, 3!) = 2 และ σ(4!) = σ(24) = 60 แต่ σ(4)·σ(3!) = 7 × 12 = 84']},
  {g:'ts',no:'โจทย์ 25',ty:'พิสูจน์',q:'ให้ n เป็นจำนวนเต็มบวก จงพิสูจน์ว่า σ(n) = n + 1 ก็ต่อเมื่อ n เป็นจำนวนเฉพาะ',hint:PROOFS[1].idea,sol:PROOFS[1].steps},
  {g:'ts',no:'โจทย์ 26',ty:'พิสูจน์',q:'ให้ n เป็นจำนวนเต็มบวก จงพิสูจน์ว่า τ(n) เป็นจำนวนคี่ ก็ต่อเมื่อ n เป็นกำลังสองสมบูรณ์',hint:PROOFS[0].idea,sol:PROOFS[0].steps},
  {g:'ts',no:'โจทย์ 27',ty:'พิสูจน์',q:'จงแสดงว่า ถ้า n เป็นจำนวนเฉพาะ แล้ว σ(n) + φ(n) = nτ(n)',hint:'หาค่าทั้งสามฟังก์ชันเมื่อ n เป็นจำนวนเฉพาะ',sol:['เมื่อ n เป็นจำนวนเฉพาะ จะได้ σ(n) = n + 1, φ(n) = n − 1 และ τ(n) = 2','σ(n) + φ(n) = (n + 1) + (n − 1) = 2n = nτ(n)']},
@@ -1231,14 +1246,31 @@ ORDER.forEach(([k],i)=>{const pv=ORDER[i-1],nx=ORDER[i+1];
   $('#'+k).insertAdjacentHTML('beforeend',`<div class="stepnav noprint"><span class="num">ขั้นที่ ${i+1} จาก ${ORDER.length}</span><span class="row" style="margin:0">${pv?`<button class="sm" data-go="${pv[0]}">← ${pv[1]}</button>`:'<button class="sm" data-go="home">← เริ่มต้น</button>'}${nx?`<button class="go" data-go="${nx[0]}">ขั้นถัดไป: ${nx[1]} →</button>`:'<button class="go" data-go="home">ครบทุกขั้นแล้ว กลับหน้าเริ่มต้น</button>'}</span></div>`)});
 
 /* ---------- NAV ---------- */
-const TABS=['home','qr','lab','mult','fill','sum','doc','inv','proof','game','ext','gloss','refs','about'];
+const TABS=['home','qr','wheel','lab','mult','fill','sum','doc','inv','proof','game','ext','gloss','refs','about'];
 $('#aboutLink').onclick=()=>goTab('about',true);
 $('#qrBig').onclick=()=>{const b=$('.qrbox');if(b.requestFullscreen)b.requestFullscreen().catch(()=>{})};$('.qrbox').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen()};
+const WN=["อุดมฤกษ์ พ***", "ภูสิษฐ์ ค***", "ปัณณธร ภ***", "วรโชติ เอ***", "จิรทีปต์ เน***", "ณฐดนย์ ค***", "กิตติภูมิ ส***", "กิตติภพ ย***", "ภัทรพล บ***", "กัลยรัตน์ ท***", "ภูวิศ ภ***", "ชนมน พ***", "ปราณภา ว***", "กรัยกิระ พ***", "จิรโชติ เก***", "พัฒปัญชิระ ป***", "กอบบุญ ต***", "ชนัฐปภา น***", "ณันร์ณัฏฐ์ เย***", "ธนกฤต ส***", "กวินทัต ส***", "ชลกร น***", "ธนวินท์ ด***", "ฐกร พ***", "สุทธิรักษ์ น***", "ปรัตถกร บ***", "ณฐภัทร เส***", "รดา บ***", "อุรชา ภ***", "สสรัช พ***", "ฉัตตพัทธ์ ก***", "สิปปภาส ส***", "พริสร ท***", "สวิชญา อ***", "ฐิติศักดิ์ จ***"];
+const WH={left:WN.map((_,i)=>i),ang:0,busy:false};
+function whDraw(){const c=$('#whC'),x=c.getContext('2d'),R=500,n=WH.left.length;x.clearRect(0,0,1040,1040);x.save();x.translate(520,520);x.rotate(WH.ang);
+  const cs=getComputedStyle(document.documentElement),ink=cs.getPropertyValue('--ink').trim()||'#14213d';
+  if(!n){x.beginPath();x.arc(0,0,R,0,7);x.fillStyle='#fff';x.fill();x.lineWidth=6;x.strokeStyle=ink;x.stroke();x.restore();return}
+  const a=2*Math.PI/n,PAL=['#ffe08a','#bfe3ff','#c9f2c7','#ffd0d0','#e3d4ff'];
+  WH.left.forEach((id,k)=>{x.beginPath();x.moveTo(0,0);x.arc(0,0,R,k*a,(k+1)*a);x.closePath();x.fillStyle=PAL[n%5===1&&k===n-1?2:k%5];x.fill();x.lineWidth=2;x.strokeStyle='#14213d';x.stroke();
+    x.save();x.rotate((k+.5)*a);x.fillStyle='#14213d';x.textAlign='right';x.textBaseline='middle';x.font='600 '+Math.min(40,Math.max(24,R*a*.5))+'px Sarabun,sans-serif';x.fillText((id+1)+' '+WN[id].split(' ')[0],R-16,0);x.restore()});
+  x.beginPath();x.arc(0,0,R,0,7);x.lineWidth=8;x.strokeStyle='#14213d';x.stroke();x.beginPath();x.arc(0,0,46,0,7);x.fillStyle='#14213d';x.fill();x.restore()}
+function whInfo(){$('#whLeft').textContent='เหลือในวงล้อ '+WH.left.length+' จาก '+WN.length+' คน';$('#whSpin').disabled=WH.busy||!WH.left.length}
+function whSpin(){if(WH.busy||!WH.left.length)return;const n=WH.left.length,a=2*Math.PI/n,k=Math.floor(Math.random()*n),id=WH.left[k];
+  const tgt=-Math.PI/2-(k+.15+Math.random()*.7)*a,tau2=2*Math.PI,from=WH.ang%tau2;let to=tgt;while(to<from+5*tau2)to+=tau2;
+  const fast=matchMedia('(prefers-reduced-motion: reduce)').matches,T=fast?1:4200,t0=performance.now();WH.busy=true;whInfo();$('#whOut').textContent='กำลังหมุน…';
+  const done=()=>{WH.ang=to;whDraw();WH.busy=false;$('#whOut').textContent='เลขที่ '+(id+1)+' · '+WN[id];if(!$('#whKeep').checked){WH.left.splice(k,1);setTimeout(()=>{if(!WH.busy){whDraw();}},1500)}whInfo()};
+  const step=t=>{const u=Math.min(1,(t-t0)/T),e=1-Math.pow(1-u,4);WH.ang=from+(to-from)*e;whDraw();u<1?requestAnimationFrame(step):done()};requestAnimationFrame(step)}
+$('#whSpin').onclick=whSpin;$('#whReset').onclick=()=>{if(WH.busy)return;WH.left=WN.map((_,i)=>i);WH.ang=0;$('#whOut').textContent='พร้อมหมุน';whDraw();whInfo()};
+whDraw();whInfo();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(!WH.busy)whDraw()});
 $('#creditLink').onclick=()=>goTab('refs',true);
 const GROUPS=[['home','เริ่มต้น',[['home','เริ่มต้น'],['qr','QR เข้าเว็บ']]],
  ['learn','เรียนรู้',[['lab','สำรวจทีละฟังก์ชัน'],['mult','ฟังก์ชันการคูณ'],['sum','สรุปสูตร'],['ext','ต่อยอด']]],
  ['prac','ฝึกทำ',[['fill','เติมตาราง'],['doc','โจทย์ท้ายบท'],['inv','โจทย์ย้อนกลับ'],['proof','ฝึกพิสูจน์']]],
- ['play','เกม',[['game','เกม']]],
+ ['play','เกม',[['game','เกม'],['wheel','วงล้อสุ่มชื่อ']]],
  ['ref','อ้างอิง',[['gloss','คำศัพท์'],['refs','แหล่งอ้างอิง'],['about','ผู้สอน']]]];
 const lastIn={};
 $('#nav').innerHTML=GROUPS.map(g=>`<button role="tab" data-grp="${g[0]}" aria-selected="false">${g[1]}</button>`).join('');
